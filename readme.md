@@ -212,3 +212,8 @@
 	* id = 1 is test
 
 * Finish
+
+## Step 3: Log
+
+* add src/main/resources/logback.xml
+	* copy github code
