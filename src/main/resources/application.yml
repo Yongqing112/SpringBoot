@@ -4,3 +4,14 @@ server:
 spring:
   application:
     name: helloWorld
+
+  datasource:
+#    hello is database name
+    url: jdbc:mysql://localhost:3306/hello?user=root
+    username: root
+    password: springboot
+
+mybatis:
+#  Before executing, you need to scan XML files otherwise, they appear as errors when invoke
+  mapper-locations:
+    - classpath:/mapper/**/*.xml
