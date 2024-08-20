@@ -3,15 +3,14 @@ package com.hello.entity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BrotherPrinter implements Printer{
-
+public class HpPrinter implements Printer{
     @Override
     public String print() {
-        return "Brother Printer";
+        return "HP Printer";
     }
 
     @Override
     public String print(String message) {
-        return "Brother Printer " + message;
+        return "HP Printer " + message;
     }
 }
