@@ -1,9 +1,14 @@
 package com.hello.entity;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HpPrinter implements Printer{
+
+    @Value("${count}")
+    private int count;
+
     @Override
     public String print() {
         return "HP Printer";
@@ -11,6 +16,7 @@ public class HpPrinter implements Printer{
 
     @Override
     public String print(String message) {
-        return "HP Printer " + message;
+        count--;
+        return "HP Printer " + message + "<br>次數:" + count;
     }
 }

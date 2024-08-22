@@ -107,6 +107,7 @@
 
 ## Step 2: Connect to Database
 
+* [安裝教學網站](https://onway2017.wordpress.com/2022/06/27/sql-%E5%A6%82%E4%BD%95%E4%B9%BE%E6%B7%A8%E7%9A%84%E5%8D%B8%E8%BC%89%E9%87%8D%E8%A3%9Dmysql/)
 * add dependency in pom.xml
 	```
 	<dependency>
