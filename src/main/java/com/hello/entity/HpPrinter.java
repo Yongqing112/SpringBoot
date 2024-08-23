@@ -11,6 +11,7 @@ public class HpPrinter implements Printer{
 
     @Override
     public String print() {
+        System.out.println("I'm now.");
         return "HP Printer";
     }
 

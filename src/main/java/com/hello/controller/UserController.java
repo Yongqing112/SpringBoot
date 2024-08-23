@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,7 +18,7 @@ public class UserController {
     @Qualifier("hpPrinter")
     private Printer printer;
 
-    @GetMapping("/name")
+    @RequestMapping("/name")
     public String getName(){
         return "hello, World! " + printer.print();
     }
@@ -30,5 +31,10 @@ public class UserController {
     @GetMapping("/queryUserName/{id}")
     public String queryUserName(@PathVariable("id") String id){
         return userService.queryUserName(id);
+    }
+
+    @RequestMapping("/product")
+    public String product() {
+        return "第一個是蘋果、第二個是橘子";
     }
 }
