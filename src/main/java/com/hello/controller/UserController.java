@@ -1,13 +1,15 @@
 package com.hello.controller;
 
 import com.hello.entity.Printer;
+import com.hello.entity.Store;
+import com.hello.entity.Student;
 import com.hello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -19,8 +21,8 @@ public class UserController {
     private Printer printer;
 
     @RequestMapping("/name")
-    public String getName(){
-        return "hello, World! " + printer.print();
+    public String getName(@RequestParam String date){
+        return "hello, World! " + printer.print() + " " + date;
     }
 
     @GetMapping("/name/{message}")
@@ -34,7 +36,30 @@ public class UserController {
     }
 
     @RequestMapping("/product")
-    public String product() {
-        return "第一個是蘋果、第二個是橘子";
+    public Store product() {
+        Store store = new Store();
+        List<String> list = new ArrayList<>();
+        list.add("蘋果");
+        list.add("橘子");
+        store.setProductList(list);
+
+        return store;
+    }
+
+    @RequestMapping("/user")
+    public Student user(){
+        Student student = new Student();
+        student.setName("Scoot");
+        return student;
+    }
+
+    @RequestMapping("/userId")
+    public Student userId(@RequestBody Student student){
+        return student;
+    }
+
+    @RequestMapping("/header")
+    public String header(@RequestHeader String info){
+        return info;
     }
 }

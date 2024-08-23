@@ -361,3 +361,127 @@ public class UserController {
   * "option": true
 * List
   * "list": [1, 2, 3]
+
+## 如何將返回值轉換成是 Json 格式？
+
+* 兩個步驟
+  * 在 class 上面加上 @RestController
+  * 將該方法的返回值，改成是一個「Java 中的物件」
+
+  ```java
+    @RequestMapping("/user")
+    public Student user(){
+        Student student = new Student();
+        student.setName("Scoot");
+        return student;
+    }
+  ```
+
+# @Controller 和 @RestController 的差別在哪裡？
+
+* 共同點：
+  * 都可以將 class 變成 Bean、也都可以將裡面的 @RequestMapping 生效
+* 差別：
+  * @Controller：將方法的返回值自動轉換成 前端模板的名字
+  * @RestController：將方法的返回值自動轉換成 Json 格式
+
+# GET 的用法和特性
+
+* 當你使用 GET 方法時，你所傳遞的參數就會被別人所看見
+* 前端只能夠將參數放在 url 的最後面，透過這個格式將參數傳遞給後端
+  *  url 的最後面，寫上 id=123&name=Judy 時
+     *  要傳遞 「id 為 123，並且 name 為 Judy」的參數資訊給後端，
+     *  這種寫在 url 最後面的參數一個名字，叫做「query parameter」
+
+# POST 的用法和特性
+
+* 當你使用 POST 方法時，你所傳遞的參數就可以隱藏起來，不被別人看見
+* 使用 POST 請求時，Http 協議就規定「前端要將參數放在 request body 中做傳遞」
+  * 由於 request body 會被封裝起來，因此參數不會洩漏
+  * 放在 request body 中的參數格式，是以 Json 格式來撰寫的
+
+# 在 Spring Boot 中接住參數的四個註解
+
+* @RequestParam
+  * 接住放在 Url 後面的參數
+  * 注意事項
+    * 參數名字須一致
+      * Spring Boot 中的變數的「名字」，必須要和 url 中的參數的「名字」一樣才可以
+    * 參數類型需一致
+  * Example:
+    * http://localhost:8080/name?date=0823
+  ```java
+    @RequestMapping("/name")
+    public String getName(@RequestParam String date){
+        return "hello, World! " + printer.print() + " " + date;
+    }
+  ```
+
+* @RequestBody
+  * 接住放在 request body 中的參數
+  * 創建一個和這個 Json 格式「一一對應」的 Java class 出來
+  
+  ```json
+  {
+    "id": "112598019",
+    "name": "Scott"
+  }
+  ```
+
+  ```java
+  public class Student {
+    
+    private Integer id;
+    private String name;
+
+    // getter 和 setter
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+  }
+  ```
+
+  * 注意事項
+    * Json 格式轉換要小心
+      * 和 Json 格式一一對應的 Java class
+  
+* @RequestHeader
+  * 接住放在 request header 中的參數
+  * 前端也是可以在 request header 中傳遞參數給後端的（通常前端是會將「權限認證」或是「通用資訊」，放在 request header 中傳遞）
+
+  ```java
+    @RequestMapping("/header")
+    public String header(@RequestHeader String info){
+        return info;
+    }
+  ```
+* @PathVariable
+  * 接住放在 url 路徑中的值
+  * 注意事項
+    * 「url 路徑」和「參數」的名字要一致
+    * 參數類型需一致
+
+    ```java
+      @GetMapping("/name/{message}")
+      public String getNameWithMessage(@PathVariable("message") String message){
+          return "hello, World! " + printer.print(message);
+      }
+    ```
+
+# 為什麼我們需要 @PathVariable？
+
+* 假設我們要傳遞 id 為 123 的參數給前端的話，其實完全可以使用 **@RequestParam** 來傳遞
+* 為什麼要大費周章把 123 的值給塞到 **url 路徑** 裡面，然後再透過 **@PathVariable** 來取得
+* 就是 **「為了支援 RESTful API 的設計風格」**
