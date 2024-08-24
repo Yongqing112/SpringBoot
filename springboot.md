@@ -548,3 +548,167 @@ public class StudentController {
     }
 }
 ```
+
+# 什麼是 Http status code（Http 狀態碼）？
+
+* 屬於 Http response 的一部分
+* 表示這次 Http request 的結果為何
+
+![alt text](img/http_response.png)
+
+* Http status code 中的分類
+  * 1xx : 資訊
+    * 取得資訊
+  * 2xx : 成功
+    *  200 OK
+       *  這一次的 http 請求成功了
+    *  201 Created
+       *  http 請求成功且表示「有一個新的資源成功被創建了
+    *  202 Accepted
+       *  這一次的請求已經被接受了，但是尚未處理完成
+
+    ![alt text](img/success_200.png)
+
+  * 3xx : 重新導向
+    * 301 Moved Permanently
+      * 這個 url 永久性的搬家了
+        * 通常後端在回傳 301 的時候，同時也會將新的 url 放在 response header 裡面，告訴前端要去哪裡找新家，所以前端就可以改成去請求這個新的 url
+    * 302 Found
+      * 這個 url 暫時性的搬家
+        * 通常後端在回傳 302 的時候，也是會將新的 url 放在 response header 裡面，告訴前端要去哪裡找新家，所以前端就可以改成去請求這個新的 url
+    * 301 和 302 差在哪裡？
+      * 就只是這個 url 是「永久性的搬家」還是「暫時性的搬家」而已
+      * 對於後端這邊來說，在設計上都是要將新的 url 放在 response header 裡面，告訴前端新的 url 在哪裡
+
+    ![alt text](img/redirect_300.png)
+
+  * 4xx : 前端請求錯誤
+    * 400 Bad Request
+      * 前端的請求參數有錯誤
+    * 401 Unauthorized
+      * 沒有通過身份驗證
+      * Example:
+        * 帳密輸入錯誤
+    * 403 Forbidden
+      * 這一次的請求被後端拒絕」，
+      * 這個拒絕通常是因為 **權限不足** 導致的
+      * Example:
+        * 這個會員他沒有權限，去執行這個功能
+    * 404 Not Found
+      * 這個網頁不存在
+      * 通常就是由於 url 輸入錯誤、或是 url 失效（該資源被移走）所導致的
+
+    ![alt text](img/frondend_error_400.png)
+
+  * 5xx : 後端處理有問題
+    * 500 Internal Server Error
+      * 後端在處理這次請求的時候發生了錯誤
+      * 可能是因為後端程式出了 bug、或是其他的原因造成的
+    * 503 Service Unavailable
+      * 臨時維護或者流量太大，所以後端目前沒有辦法處理請求
+    * 504 Gateway Timeout
+      * 這一次的請求超時了
+      *  http 請求花了太長的時間都還沒有完成，所以就直接強制結束
+
+    ![alt text](img/backend_error_500.png)
+
+# 什麼是 Spring JDBC？
+
+* 能夠在 Spring Boot 中執行 sql 語法，進而去操作資料庫
+
+## Spring JDBC 根據 sql 分成兩大類：update 和 query
+
+* 在 update 系列的方法中，可以去執行 
+  * INSERT、
+  * UPDATE、
+  * DELETE 這三種 sql 語法
+* 而在 query 系列的方法中，只能執行 
+  * SELECT 這一種 sql 語法
+
+## update() 的基本用法
+
+* 分成 4 個步驟
+  * 注入一個 NamedParameterJdbcTemplate
+    * 在你的 Bean 裡面，先去注入
+    
+    ```java
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    ```
+
+    * NamedParameterJdbcTemplate
+      * 是 Spring JDBC 自動幫我們生成的 Bean，
+      * 負責去處理和資料庫溝通的所有事項
+
+  * 撰寫 sql 語法
+    * 注意database要對，table和column也要對
+  ```java
+  String sql = "INSERT INTO student(id, name) VALUES (3, 'John')";
+  ```
+
+  *  新增一個 Map<String, object> 的 map 變數
+     *  放 sql 語法裡面的變數的值
+     *  想要「動態的決定」當前 sql 語法中的值的話，那就需要依靠 map 
+        *  修改 sql 語法、添加 map 變數中的值
+           *  sql 語法：將「3 和 John」的地方，改成「:studentId 和 :studentName」
+              *  :studentId
+              *  就表示我們指定這是一個 sql 中的變數，名字叫做 studentId
+              *  :studentName
+              *  就表示我們指定這又是另一個 sql 中的變數，名字則是叫做 studentName
+           *  map 變數：在 map 變數中 put 兩組 key-value 的值進去
+
+           ```java
+               @RequestMapping("/students/insert/map")
+              public String insertMap(@RequestBody Student student){
+                  String sql = "INSERT INTO user(id, user_name) VALUES (:studentId, :studentName)";
+                  Map<String, Object> map = new HashMap<>();
+                  map.put("studentId", student.getId());
+                  map.put("studentName", student.getName());
+                  namedParameterJdbcTemplate.update(sql, map);
+                  return "執行 INSERT SQL";
+              } 
+            ```
+  
+  ```java
+  Map<String, Object> map = new HashMap<>();
+  ```
+
+  *  使用 update() 方法
+     *  使用 namedParameterJdbcTemplate 的 update() 方法，
+     *  並且把上面所新增的 sql 和 map 這兩個變數，依照順序的給傳進去
+  
+  ```java
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @RequestMapping("/students/insert")
+    public String insert(){
+        String sql = "INSERT INTO user(id, user_name) VALUES (3, 'John')";
+        Map<String, Object> map = new HashMap<>();
+        namedParameterJdbcTemplate.update(sql, map);
+        return "執行 INSERT SQL";
+    }
+  ```
+
+
+## 在 Spring Boot 中操作資料庫
+
+* 常見的操作資料庫的工具有:
+  * 在 Spring Boot 中執行 sql 語法，去操作資料庫
+    * 直接在 Spring Boot 中去執行原始的 sql 語法，然後透過這些 sql 語法去存取資料庫的數據這樣
+    * Spring JDBC
+    * MyBatis
+  * 使用 ORM(Object Relational Mapping) 的概念，去操作資料庫
+    * 使用這類的工具，基本上就很少寫 sql 語法了，而是會套用另一種新的概念（即是 ORM），去存取資料庫的數據
+    * Spring Data JPA
+    * Hibernate
+
+## 什麼是 CRUD？
+
+* Create（新增）
+* Read（查詢）
+* Update（修改）
+* Delete（刪除）
+
+![alt text](img/CRUD.png)
+

@@ -7,7 +7,8 @@ spring:
 
   datasource:
 #    hello is database name
-    url: jdbc:mysql://localhost:3306/helloWorld?user=root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hello?user=root
     username: root
     password: springboot
 

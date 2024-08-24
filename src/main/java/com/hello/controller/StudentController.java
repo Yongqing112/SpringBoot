@@ -1,10 +1,36 @@
 package com.hello.controller;
 
 import com.hello.entity.Student;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class StudentController {
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @RequestMapping("/students/insert")
+    public String insert(){
+        String sql = "INSERT INTO user(id, user_name) VALUES (3, 'John')";
+        Map<String, Object> map = new HashMap<>();
+        namedParameterJdbcTemplate.update(sql, map);
+        return "執行 INSERT SQL";
+    }
+
+    @RequestMapping("/students/insert/map")
+    public String insertMap(@RequestBody Student student){
+        String sql = "INSERT INTO user(id, user_name) VALUES (:studentId, :studentName)";
+        Map<String, Object> map = new HashMap<>();
+        map.put("studentId", student.getId());
+        map.put("studentName", student.getName());
+        namedParameterJdbcTemplate.update(sql, map);
+        return "執行 INSERT SQL";
+    }
 
     @PostMapping("/students")
     public String create(@RequestBody Student student){
