@@ -479,9 +479,72 @@ public class UserController {
           return "hello, World! " + printer.print(message);
       }
     ```
+    
+  * 為什麼我們需要 @PathVariable？
+    * 假設我們要傳遞 id 為 123 的參數給前端的話，其實完全可以使用 **@RequestParam** 來傳遞
+    * 為什麼要大費周章把 123 的值給塞到 **url 路徑** 裡面，然後再透過 **@PathVariable** 來取得
+    * 就是 **「為了支援 RESTful API 的設計風格」**
+  
 
-# 為什麼我們需要 @PathVariable？
+# 什麼是 API？
 
-* 假設我們要傳遞 id 為 123 的參數給前端的話，其實完全可以使用 **@RequestParam** 來傳遞
-* 為什麼要大費周章把 123 的值給塞到 **url 路徑** 裡面，然後再透過 **@PathVariable** 來取得
-* 就是 **「為了支援 RESTful API 的設計風格」**
+* 用特定的格式，去表示某個功能到底要怎麼使用
+* API 的目的，就是「用工程師看得懂的方式，去說明某個方法要如何使用」
+* Example:
+  * 把「取得商品列表」的 API 給定義好了，
+  * 像是我們會去說明
+    * 要使用 GET 方法來請求、
+    * 並且請求參數 (query parameter) 要帶上什麼、
+    * 以及可能的 Http response 回覆會是什麼
+    * ![alt text](img/API.png)
+
+# [什麼是 RESTful API？](https://ithelp.ithome.com.tw/articles/10335071)
+
+* 符合 REST 風格的 API
+* RESTful API 的設計
+  * 使用 Http method 表示動作
+    * POST、GET、PUT、DELETE 分別去對應到資料庫的 Create、Read、Update、Delete 操作
+    ![alt text](img/http_method_action.png)
+  * 使用 url 路徑來描述資源之間的階層關係
+    * Example:
+      * 有一個 API GET /users
+        * 根據我們剛剛所介紹的 REST 風格，知道 GET 是去對應到資料庫的「Read 查詢」操作，
+        * 因此這個 API GET /users 的含義，就是去「取得所有的 user」
+      * 另一個 API GET /users/123
+        * 這個 API 的含義，就是去「取得在所有的 user 裡面，user id 為 123 的那個 user」
+      ![alt text](img/restful_url.png)
+  * 使用 Json 或是 Xml 回傳
+    * REST 風格會要求後端程式所回傳的 response body，必須要是 Json 或是 Xml 的格式
+    * 其實就是在 class 上面加上 @RestController，這樣就可以正確的返回 Json 格式了
+   
+    ![alt text](img/restful_return_json.png)
+* **RESTful API 的目的，是為了「簡化工程師之間的溝通成本」，並不是設計 API 的標準規範**
+
+# 在 Spring Boot 中設計和實作 RESTful API
+
+```java
+@RestController
+public class StudentController {
+
+    @PostMapping("/students")
+    public String create(@RequestBody Student student){
+        return "執行資料庫的Create操作";
+    }
+
+    @GetMapping("/students/{id}")
+    public String read(@PathVariable String id){
+        return "執行資料庫的Read操作";
+    }
+
+    @PutMapping("/students/{id}")
+    public String update(@PathVariable String id,
+                         @RequestBody Student student){
+        return "執行資料庫的Update操作";
+    }
+
+    @DeleteMapping("/students/{id}")
+    public String delete(@PathVariable String id){
+        return "執行資料庫的Delete操作";
+    }
+}
+```
