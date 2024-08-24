@@ -690,6 +690,50 @@ public class StudentController {
     }
   ```
 
+Quer## query() 的用法
+
+* 前兩個參數和 update() 方法一樣，都是先放入「要執行的 sql 語法」，接著是放入「動態決定 sql 變數的 map」
+* 特別的地方，就在於他的第三個參數 RowMapper
+  * 將資料庫查詢出來的數據，轉換成是 Java object
+  * 像是我們可以創建一個新的 StudentRowMapper class，然後讓他去 implements RowMapper 這個 interface，實作如下的程式：
+
+  ```java
+
+  package com.hello.mapper;
+
+  import com.hello.entity.Student;
+  import org.springframework.jdbc.core.RowMapper;
+
+
+  import java.sql.ResultSet;
+  import java.sql.SQLException;
+
+  public class StudentRowMapper implements RowMapper<Student> {
+      @Override
+      public Student mapRow(ResultSet rs, int rowNum) throws SQLException{
+          Student student = new Student();
+          student.setId(rs.getInt("id"));
+          student.setName(rs.getString("user_name"));
+          return student;
+      }
+
+  }
+  ```
+
+  ```java
+    @RequestMapping("/students/query/{id}")
+    public List<Student> query(@PathVariable String id){
+        String sql = "SELECT id, user_name from user where id= :studentId";
+        Map<String, Object> map = new HashMap<>();
+        RowMapper<Student> rowMapper = new StudentRowMapper();
+        map.put("studentId", id);
+        return namedParameterJdbcTemplate.query(sql, map, rowMapper);
+    }
+  ```
+
+![alt text](img/query_rowmapper.png)
+
+
 
 ## 在 Spring Boot 中操作資料庫
 

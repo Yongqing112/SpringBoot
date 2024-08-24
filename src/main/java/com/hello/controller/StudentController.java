@@ -1,11 +1,14 @@
 package com.hello.controller;
 
 import com.hello.entity.Student;
+import com.hello.mapper.StudentRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,6 +33,15 @@ public class StudentController {
         map.put("studentName", student.getName());
         namedParameterJdbcTemplate.update(sql, map);
         return "執行 INSERT SQL";
+    }
+
+    @RequestMapping("/students/query/{id}")
+    public List<Student> query(@PathVariable String id){
+        String sql = "SELECT id, user_name from user where id= :studentId";
+        Map<String, Object> map = new HashMap<>();
+        RowMapper<Student> rowMapper = new StudentRowMapper();
+        map.put("studentId", id);
+        return namedParameterJdbcTemplate.query(sql, map, rowMapper);
     }
 
     @PostMapping("/students")
