@@ -1,6 +1,7 @@
 package com.hello.dao.impl;
 
 import com.hello.dao.Dao;
+import com.hello.dto.BookRequest;
 import com.hello.entity.Student;
 import com.hello.mapper.StudentRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,25 @@ public class StudentDao implements Dao<Student> {
         else{
             return null;
         }
+    }
+
+    @Override
+    public Student getById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public Integer create(BookRequest bookRequest) {
+        return 0;
+    }
+
+    @Override
+    public void update(Integer bookId, BookRequest bookRequest) {
+
+    }
+
+    @Override
+    public void delete(Integer bookId) {
+
     }
 }

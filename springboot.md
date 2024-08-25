@@ -828,3 +828,47 @@ Quer## query() 的用法
   * Dao 層只能執行 sql 語法，不能添加商業邏輯
     * 所以像是取得資料庫的數據之後，假設想要進行排序、或是篩選之類的動作，就得回到 Service 層再處理
     * 保持 Dao 是非常單純的和資料庫溝通，一切複雜的商業邏輯處理，就通通回到 Service 層進行
+
+# ResponseEntity 
+
+* 是 Spring 框架中一個用來表示 HTTP 響應的類，它可以包含響應的狀態碼、響應頭和響應體。
+* 使用 ResponseEntity 可以更加靈活地控制 HTTP 響應的詳細信息，而不僅僅是返回一個響應體對象。
+
+```java
+@GetMapping("/books/{bookId}")
+public ResponseEntity<Book> getBook(@PathVariable Integer bookId) {
+    Book book = bookService.getBookById(bookId);
+
+    if (book != null) {
+        return ResponseEntity.status(HttpStatus.OK).body(book);
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+}
+```
+
+# 時間格式的設定
+
+* Spring Boot 預設的時間格式，是 2018-05-22T16:00:00.000+00:00 的格式
+* 而如果想要改變這個格式，將他變成是 2018-05-23 00:00:00 的話，會需要在 **application.properties** 檔案中進行設定
+
+```properties
+spring.jackson.time-zone=GMT+8
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+```
+
+```yml
+spring:
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+```
+
+# KeyHolder
+
+* 這個算是 update() 的一種進階用法，即是在創建一筆數據到資料庫時，可以取得到 **「由資料庫所生成的 id」**
+* 因為在設計 book table 時，其中的 book_id 欄位，我們是設定成 AUTO_INCREMENT
+  * 會導致一種現象，即是「我們在 Spring Boot 中插入了一筆數據，但是我們卻不知道這筆數據的 id 值是多少」
+  
+
+# [教學網站](https://ithelp.ithome.com.tw/articles/10339561)
