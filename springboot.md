@@ -756,3 +756,75 @@ Quer## query() 的用法
 
 ![alt text](img/CRUD.png)
 
+# 什麼是軟體工程？
+
+* 在面對一個 **大型的系統** 時，工程師們要 **如何分工合作**，一起去解決問題？
+* 當你今天要寫的是一個超過一兩千行的程式，並且你們的團隊中，是有好幾位工程師一起分工合作，在這種情況下，就會開始需要去注重 「軟體工程」
+
+# 什麼是 MVC 架構模式？
+
+* 將一個系統，去拆分成 **「Model、View、Controller」** 三個部分，並且讓每一個部分都各自負責不同的功能
+
+![alt text](img/MVC.png)
+
+## Model
+
+* 實作業務邏輯，並且處理數據
+* 因為 Model 是負責處理數據，因此 Model 會需要去跟資料庫做溝通，將這些數據的改動給儲存起來
+* 所以我們都會將核心的業務邏輯，寫在 Model 這個部分裡面
+
+##　Controller
+
+* 轉發 Http request
+* 收到來自前端的 Http request 之後，Controller 就會負責將這些 request，去轉發給 Model，讓 Model 去處理後續的操作
+
+## View
+
+* 使用 Html 的模板去呈現數據
+* 近幾年提倡「前後端分離」的關係，
+* 所以版面設計就都會交給前端處理，
+* 因此在後端這裡，就不需要處理 Html 的版面部分，改成是使用 Json 格式來傳遞數據給前端，
+* 因此 View 這部分，相對來說就變得越來越不重要
+
+## MVC 架構模式的優點
+
+* 職責分離，更容易維護程式
+* 使程式結構更直覺，有利於團隊分工
+* 可重複使用寫好的程式
+
+# 在 Spring Boot 中套用 MVC 架構模式
+
+* 將MVC的架構模式，去轉化成是 **「Controller-Service-Dao** 的三層式架構」 
+
+## Controller-Service-Dao 三層式架構
+
+![alt text](img/Controller-Service-Dao.png)
+
+* Controller 層
+  * 接收前端傳過來的 Http request，並且去驗證請求參數
+  * Example:
+    * 凡是和「前端」進行溝通的部分，就通通會放在 Controller 層裡面
+    * @RequestMapping、@RequestParam...等等
+* Service 層
+  * 商業邏輯的處理
+  * 當 Controller 層接收到前端傳過來的 Http request、並且對其驗證之後，這時候Controller 就會去 call Service層，讓 Service 負責去接手後續的處理
+  * 而 Service 層在處理商業邏輯的過程中，Service 層會再去 call Dao這一層
+* Dao 層
+  * 專門去和資料庫進行溝通的
+  * 會透過 sql 語法，去操作資料庫，進而去查詢/修改資料庫中的數據
+  * 凡只要是和「資料庫」溝通的部分，就通通是會放在 Dao 層裡面
+  
+![alt text](img/Controller-Service-Dao_impl.png)
+
+* 將原本的程式，由 1 個 class 拆分成 3 個 class，分別透過 StudentController、StudentService、StudentDao 這三個 class
+* 因此後續在維護上，假設我們想修改「查詢的 sql 語法」，那我們就只要去修改 StudentDao 中的程式即可
+* 又或是我們想要修改的是「前端的請求參數」，那我們就只要去修改 StudentController 中的程式即可
+
+* 注意事項
+  * 透過 Class 名字結尾，表示這是哪一層
+  * 將 Controller、Service、Dao，全部變成 Bean
+  * 不能在 Controller 中直接使用 Dao
+    * Controller 就一定只能去 call Service，再讓 Service 去 call Dao
+  * Dao 層只能執行 sql 語法，不能添加商業邏輯
+    * 所以像是取得資料庫的數據之後，假設想要進行排序、或是篩選之類的動作，就得回到 Service 層再處理
+    * 保持 Dao 是非常單純的和資料庫溝通，一切複雜的商業邏輯處理，就通通回到 Service 層進行
