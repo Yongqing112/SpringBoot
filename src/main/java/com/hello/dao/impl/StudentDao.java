@@ -1,7 +1,8 @@
 package com.hello.dao.impl;
 
 import com.hello.dao.Dao;
-import com.hello.dto.BookRequest;
+import com.hello.dto.Request;
+import com.hello.dto.StudentRequest;
 import com.hello.entity.Student;
 import com.hello.mapper.StudentRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +43,20 @@ public class StudentDao implements Dao<Student> {
     }
 
     @Override
-    public Integer create(BookRequest bookRequest) {
-        return 0;
+    public Integer create(Request request) {
+        String sql = "INSERT INTO user(id, user_name) VALUES (:studentId, :studentName)";
+        StudentRequest studentRequest = (StudentRequest) request;
+        Map<String, Object> map = new HashMap<>();
+        map.put("studentId", studentRequest.getId());
+        map.put("studentName", studentRequest.getUser_name());
+        namedParameterJdbcTemplate.update(sql, map);
+
+        Integer studentId = getById(studentRequest.getId()).getId();
+        return studentId;
     }
 
     @Override
-    public void update(Integer bookId, BookRequest bookRequest) {
+    public void update(Integer bookId, Request bookRequest) {
 
     }
 

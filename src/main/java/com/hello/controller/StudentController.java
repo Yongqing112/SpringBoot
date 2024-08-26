@@ -1,15 +1,13 @@
 package com.hello.controller;
 
+import com.hello.dto.StudentRequest;
 import com.hello.entity.Student;
-import com.hello.mapper.StudentRowMapper;
 import com.hello.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,13 +28,13 @@ public class StudentController {
     }
 
     @RequestMapping("/students/insert/map")
-    public String insertMap(@RequestBody Student student){
+    public Student insertMap(@RequestBody Student student){
         String sql = "INSERT INTO user(id, user_name) VALUES (:studentId, :studentName)";
         Map<String, Object> map = new HashMap<>();
         map.put("studentId", student.getId());
         map.put("studentName", student.getName());
         namedParameterJdbcTemplate.update(sql, map);
-        return "執行 INSERT SQL";
+        return studentService.getById(String.valueOf(student.getId()));
     }
 
     @RequestMapping("/students/query/{id}")
@@ -46,8 +44,11 @@ public class StudentController {
     }
 
     @PostMapping("/students")
-    public String create(@RequestBody Student student){
-        return "執行資料庫的Create操作";
+    public Student create(@RequestBody StudentRequest studentRequest){
+        Integer studentId = studentService.createStudent(studentRequest);
+
+        Student student = studentService.getById(String.valueOf(studentId));
+        return student;
     }
 
     @GetMapping("/students/{id}")

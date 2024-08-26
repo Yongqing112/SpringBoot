@@ -2,10 +2,9 @@ package com.hello.dao.impl;
 
 import com.hello.dao.Dao;
 import com.hello.dto.BookRequest;
+import com.hello.dto.Request;
 import com.hello.entity.Book;
-import com.hello.entity.Student;
 import com.hello.mapper.BookRowMapper;
-import com.hello.mapper.StudentRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -49,10 +48,11 @@ public class BookDao implements Dao<Book> {
     }
 
     @Override
-    public Integer create(BookRequest bookRequest) {
+    public Integer create(Request request) {
+
         String sql = "INSERT INTO book(title, author, image_url, price, published_date, created_date, last_modified_date) " +
                 "VALUES (:title, :author, :imageUrl, :price, :publishedDate, :createdDate, :lastModifiedDate)";
-
+        BookRequest bookRequest = (BookRequest) request;
         Map<String, Object> map = new HashMap<>();
         map.put("title", bookRequest.getTitle());
         map.put("author", bookRequest.getAuthor());
@@ -74,11 +74,11 @@ public class BookDao implements Dao<Book> {
     }
 
     @Override
-    public void update(Integer bookId, BookRequest bookRequest) {
+    public void update(Integer bookId, Request request) {
         String sql = "UPDATE book SET title = :title, author = :author, image_url = :imageUrl, " +
                 "price = :price, published_date = :publishedDate, last_modified_date = :lastModifiedDate" +
                 " WHERE book_id = :bookId ";
-
+        BookRequest bookRequest = (BookRequest) request;
         Map<String, Object> map = new HashMap<>();
         map.put("bookId", bookId);
 

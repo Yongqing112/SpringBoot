@@ -1,16 +1,14 @@
 package com.hello.dao;
 
-import com.hello.dto.BookRequest;
-
-import java.util.List;
+import com.hello.dto.Request;
 
 public interface Dao <T>{
     T getById(String id);
     T getById(Integer id);
 
-    Integer create(BookRequest bookRequest);
+    Integer create(Request request);
 
-    void update(Integer bookId, BookRequest bookRequest);
+    void update(Integer bookId, Request request);
 
     void delete(Integer bookId);
 }

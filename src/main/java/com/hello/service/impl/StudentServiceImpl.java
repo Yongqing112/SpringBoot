@@ -1,6 +1,7 @@
 package com.hello.service.impl;
 
 import com.hello.dao.Dao;
+import com.hello.dto.StudentRequest;
 import com.hello.entity.Student;
 import com.hello.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,5 +16,10 @@ public class StudentServiceImpl implements StudentService<Student> {
     @Override
     public Student getById(String id) {
         return dao.getById(id);
+    }
+
+    @Override
+    public Integer createStudent(StudentRequest studentRequest) {
+        return dao.create(studentRequest);
     }
 }

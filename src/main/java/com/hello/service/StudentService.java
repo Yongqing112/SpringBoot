@@ -1,8 +1,10 @@
 package com.hello.service;
 
-import java.util.List;
+import com.hello.dto.StudentRequest;
 
 public interface StudentService <T>{
 
     T getById(String id);
+
+    Integer createStudent(StudentRequest studentRequest);
 }

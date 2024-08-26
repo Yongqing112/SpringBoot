@@ -2,7 +2,7 @@ package com.hello.dto;
 
 import java.util.Date;
 
-public class BookRequest {
+public class BookRequest implements Request{
 
     private String title;
 
