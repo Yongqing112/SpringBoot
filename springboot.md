@@ -3,7 +3,7 @@
 * 基本上可以把註解想像成是賦予一個新的功能，不同的註解所提供的功能不一樣，並且他們的使用方法也會有點不太一樣
 
 * E.g.: 
-	```
+	```java
 	@SpringBootApplication
 
 	用法: 加在 class 上面
@@ -21,7 +21,7 @@
 
 * 被依賴物件並不是在依賴物件的程式中使用new產生，而是從外部「注入(inject)」至依賴物件
 
-	```
+	```java
 	public class ShoppingCart {
     
 		private PostShipping postShipping;
@@ -51,7 +51,7 @@
 # Dependency Inversion Principle(DIP)
 	
 * 透過介面(interface)與依賴注入的方式來降低依賴間的耦合，稱為DIP
-	```
+	```java
 	/** 運送介面 */
 	public interface Shipping {
 		
@@ -76,7 +76,7 @@
 	}
 	```
 	
-	```
+	```java
 	public class ShoppingCart {
     
 		private Shipping shipping; // <-- 改為Shipping介面，此為利用物建導向的多型特性。
@@ -108,7 +108,8 @@
 
 * Example:
 	* 我想注入Printer在UserController，就要再把Printer變成@Component，這樣就會變成由 Spring 容器所管理的Bean
-```
+
+```java
 package com.hello.entity;
 
 import org.springframework.stereotype.Component;
@@ -128,7 +129,7 @@ public class BrotherPrinter implements Printer{
 }
 ```
 
-```
+```java
 @RestController
 public class UserController {
 
@@ -170,3 +171,50 @@ public class UserController {
 		* Example:
 			* HpPrinter class 所生成的 Bean，名字就會叫做 hpPrinter
 			* CanonPrinter 所生成的 Bean，名字就會叫做 canonPrinter
+
+# 什麼是 Spring Boot 設定檔？
+
+* 指的是「放在 src/main/resources 這個資料夾底下的 applicaiton.properties 檔案」(applicaiton.yml)
+  * 存放 Spring Boot 程式的設定值
+
+* properties 語法的注意事項
+  * 不需要加上空白鍵排版
+    * Example:
+      * count=5
+  * key 中的 . 表示「的」的概念
+    * Example:
+      * my.name=John 這一整行的意思，就是「我的名字叫做 John」
+  * 使用 # 來表示 comment
+
+# 讀取 Spring Boot 設定檔（application.properties）中的值：@Value
+
+* 使用 @Value 的注意事項
+  * 需要遵守固定格式寫法
+  * Example:
+
+  ```java
+  @Value("${XXXX}")
+  ```
+
+  * 只有在 Bean 和 Configuration 中才能生效
+  * 類型需要一致
+  * 可以設定預設值
+    *  application.properties 檔案中「沒有」printer.count 這個 key 的話，會出現「Could not resolve placeholder 'printer.count' in value "${printer.count}"」的錯誤
+    *  在找不到這個key時，就會使用預設值
+    * Example:
+
+  ```java
+  @Value("${printer.count:200}")
+  private int count;
+  ```
+  
+  * 補充：使用 @Value 的預設值寫法，其實是有點雙面刃的做法，因為這樣會讓設定值四散在各處，後續會比較難進行管理，因此建議大家斟酌使用
+
+  * yml寫法:
+  
+  ```yml
+  count: 5
+  
+  my:
+    name: John
+  ```
