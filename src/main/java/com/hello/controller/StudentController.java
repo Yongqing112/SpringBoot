@@ -4,6 +4,8 @@ import com.hello.dto.StudentRequest;
 import com.hello.entity.Student;
 import com.hello.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,32 +36,46 @@ public class StudentController {
         map.put("studentId", student.getId());
         map.put("studentName", student.getName());
         namedParameterJdbcTemplate.update(sql, map);
-        return studentService.getById(String.valueOf(student.getId()));
+        return studentService.readById(student.getId());
     }
 
     @RequestMapping("/students/query/{id}")
-    public Student query(@PathVariable String id){
+    public Student query(@PathVariable Integer id){
 
-        return studentService.getById(id);
+        return studentService.readById(id);
     }
 
     @PostMapping("/students")
     public Student create(@RequestBody StudentRequest studentRequest){
+        // insert
         Integer studentId = studentService.createStudent(studentRequest);
 
-        Student student = studentService.getById(String.valueOf(studentId));
+        Student student = studentService.readById(studentId);
         return student;
     }
 
     @GetMapping("/students/{id}")
-    public String read(@PathVariable String id){
-        return "執行資料庫的Read操作";
+    public Student read(@PathVariable Integer id){
+        Student student = studentService.readById(id);
+        return student;
     }
 
     @PutMapping("/students/{id}")
-    public String update(@PathVariable String id,
-                         @RequestBody Student student){
-        return "執行資料庫的Update操作";
+    public ResponseEntity<Student> update(@PathVariable Integer id,
+                         @RequestBody StudentRequest studentRequest){
+        // 檢查 student 是否存在
+        Student student = studentService.readById(id);
+
+        if(student == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // 修改 Student 的數據
+        studentService.update(id, studentRequest);
+
+        Student updateStudent = studentService.readById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updateStudent);
     }
 
     @DeleteMapping("/students/{id}")

@@ -14,12 +14,16 @@ public class StudentServiceImpl implements StudentService<Student> {
     private Dao<Student> dao;
 
     @Override
-    public Student getById(String id) {
-        return dao.getById(id);
+    public Integer createStudent(StudentRequest studentRequest) {
+        return dao.create(studentRequest);
+    }
+
+    public Student readById(Integer id) {
+        return dao.readById(id);
     }
 
     @Override
-    public Integer createStudent(StudentRequest studentRequest) {
-        return dao.create(studentRequest);
+    public void update(Integer id, StudentRequest studentRequest) {
+        dao.update(id, studentRequest);
     }
 }

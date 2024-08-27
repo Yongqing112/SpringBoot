@@ -13,7 +13,7 @@ public class BookService implements com.hello.service.BookService<Book> {
 
     @Override
     public Book getBookById(Integer bookId) {
-        return dao.getById(bookId);
+        return dao.readById(bookId);
     }
 
     @Override

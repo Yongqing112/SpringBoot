@@ -4,7 +4,9 @@ import com.hello.dto.StudentRequest;
 
 public interface StudentService <T>{
 
-    T getById(String id);
+    T readById(Integer id);
 
     Integer createStudent(StudentRequest studentRequest);
+
+    void update(Integer id, StudentRequest studentRequest);
 }

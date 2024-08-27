@@ -20,17 +20,21 @@ import java.util.Map;
 
 @Component
 public class BookDao implements Dao<Book> {
+    @Override
+    public void update(String Id, Request request) {
+
+    }
 
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public Book getById(String id) {
+    public Book readById(String id) {
         return null;
     }
 
     @Override
-    public Book getById(Integer id) {
+    public Book readById(Integer id) {
         String sql = "SELECT book_id, title, author, image_url, price, published_date, created_date, last_modified_date " +
                 "FROM book WHERE book_id = :bookId";
         Map<String, Object> map = new HashMap<>();
