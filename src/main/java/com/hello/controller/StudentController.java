@@ -79,7 +79,8 @@ public class StudentController {
     }
 
     @DeleteMapping("/students/{id}")
-    public String delete(@PathVariable String id){
-        return "執行資料庫的Delete操作";
+    public ResponseEntity<?> delete(@PathVariable Integer id){
+        studentService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

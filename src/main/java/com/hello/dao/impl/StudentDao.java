@@ -69,7 +69,13 @@ public class StudentDao implements Dao<Student> {
     }
 
     @Override
-    public void delete(Integer bookId) {
+    public void delete(Integer id) {
+        String sql = "DELETE FROM student WHERE id = :studentId ";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("studentId", id);
+
+        namedParameterJdbcTemplate.update(sql, map);
 
     }
 

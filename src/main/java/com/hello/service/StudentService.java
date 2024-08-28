@@ -9,4 +9,6 @@ public interface StudentService <T>{
     Integer createStudent(StudentRequest studentRequest);
 
     void update(Integer id, StudentRequest studentRequest);
+
+    void delete(Integer id);
 }
