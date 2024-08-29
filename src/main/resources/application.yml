@@ -1,25 +1,43 @@
+#H2 DB
 server:
-  port: 8080
+  port: 9100 # 伺服器的port號
 
 spring:
-  application:
-    name: helloWorld
-
+  h2:
+    console:
+      enabled: true
   datasource:
-#    hello is database name
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/hello?user=root
-    username: root
-    password: springboot
+    url: jdbc:h2:mem:todolist # h2 database 連接位址
+    driver-class-name: org.h2.Driver # 配置driver
+    username: root # database 用戶名
+    password: springboot # database 密碼
 
-  jackson:
-    time-zone: GMT+8
-    date-format: yyyy-MM-dd HH:mm:ss
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
 
-mybatis:
-#  Before executing, you need to scan XML files otherwise, they appear as errors when invoke
-  mapper-locations:
-    - classpath:/mapper/**/*.xml
+##MySQL
+#server:
+#  port: 8080
+#
+#spring:
+#  application:
+#    name: helloWorld
+#
+#  datasource:
+##    hello is database name
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/hello?user=root
+#    username: root
+#    password: springboot
+#
+#  jackson:
+#    time-zone: GMT+8
+#    date-format: yyyy-MM-dd HH:mm:ss
+#
+#mybatis:
+##  Before executing, you need to scan XML files otherwise, they appear as errors when invoke
+#  mapper-locations:
+#    - classpath:/mapper/**/*.xml
 
 
 count: 5
