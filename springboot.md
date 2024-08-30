@@ -51,6 +51,11 @@
     - [Spring Data JPA 有提供以下Interface](#spring-data-jpa-有提供以下interface)
     - [JPA(Java Persistence API)](#jpajava-persistence-api)
   - [H2 Database](#h2-database)
+  - [Thymeleaf](#thymeleaf)
+  - [@Controller和@RestController差別](#controller和restcontroller差別)
+    - [@Controller](#controller-1)
+    - [@RestController](#restcontroller)
+    - [總結](#總結)
   - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
   - [Reference](#reference)
 
@@ -446,7 +451,7 @@
 - 共同點：
   - 都可以將 class 變成 Bean、也都可以將裡面的 @RequestMapping 生效
 - 差別：
-  - @Controller：將方法的返回值自動轉換成 前端模板的名字
+  - @Controller：將方法的返回值自動轉換成前端模板的名字
   - @RestController：將方法的返回值自動轉換成 Json 格式
 
 ## GET 的用法和特性
@@ -989,6 +994,53 @@ public class TodoService {
 
 - H2 屬於記憶體型資料庫，即全部儲存的資料內容是存放在伺服器記憶體中，也因此讀寫效能相對較高，但當伺服器關閉時資料也會立即消失
 - H2 是利用 Java 所設計出的關聯式資料庫，目前是一款具開源、免費、輕量與速度相當快的資料庫引擎，當我們在專案引用時，自動會提供瀏覽器的管理控制台，支援 JDBC、ODBC API 和 SQL語法。
+
+## Thymeleaf
+
+- 是一個Java庫，它是一個XML/HTML5模板引擎，能夠應用轉換於模板檔案，以顯示應用程式產生的資料，撰寫Thymeleaf就像是在寫HTML。
+- 在Web應用程式中，Thymeleaf旨在成為JSP的完全替代品，模版檔案可以直接在瀏覽其中打開。
+
+## @Controller和@RestController差別
+
+### @Controller
+
+- 是一個通用的 Spring MVC 控制器註解，用於標識一個類作為控制器，
+- 該類的處理方法通常會返回一個視圖名稱，並且該視圖會被解析為 HTML 頁面。
+- Example: 在這個例子中，hello 是一個視圖名稱，可能對應於一個 hello.html 或 hello.jsp 模板文件。
+
+```java
+@Controller
+public class MyController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello"; // 返回視圖名稱 "hello"
+    }
+}
+```
+
+### @RestController
+
+- 是 @Controller 和 @ResponseBody 的結合體。用於創建 RESTful 網絡服務。
+- 這個註解標記的類中的所有方法都會自動將返回值轉換為 JSON 或 XML 並直接寫入 HTTP 響應體
+- Example: 在這個例子中，hello() 方法的返回值 "Hello, World!" 將直接作為 HTTP 響應體返回，並且以 JSON 格式返回給客戶端，例如：{"message":"Hello, World!"}。
+
+
+```java
+@RestController
+public class MyRestController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello, World!"; // 返回 JSON 格式的數據
+    }
+}
+```
+
+### 總結
+
+- @Controller：用於處理視圖的控制器，通常用來返回視圖頁面。適合需要渲染 HTML 頁面的應用。
+- @RestController：用於處理 RESTful API 的控制器，直接返回數據（例如 JSON 或 XML），適合用來構建 RESTful 網絡服務。
 
 ## [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
 
