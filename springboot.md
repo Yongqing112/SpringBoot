@@ -1,7 +1,6 @@
 # Catalog
 
 - [Catalog](#catalog)
-- [Spring Doc](#spring-doc)
   - [Annotation(標註、註解)](#annotation標註註解)
   - [Inversion of Control(IoC)](#inversion-of-controlioc)
   - [Dependency Injection(DI)](#dependency-injectiondi)
@@ -51,15 +50,16 @@
     - [Spring Data JPA 有提供以下Interface](#spring-data-jpa-有提供以下interface)
     - [JPA(Java Persistence API)](#jpajava-persistence-api)
   - [H2 Database](#h2-database)
+- [Day 11 - Spring Boot 模版引擎 x Thymeleaf](#day-11---spring-boot-模版引擎-x-thymeleaf)
   - [Thymeleaf](#thymeleaf)
   - [@Controller和@RestController差別](#controller和restcontroller差別)
     - [@Controller](#controller-1)
     - [@RestController](#restcontroller)
     - [總結](#總結)
+  - [首先要將thymeleaf 的命名空間導入，在hello.html](#首先要將thymeleaf-的命名空間導入在hellohtml)
+  - [Model](#model-1)
   - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
   - [Reference](#reference)
-
-# Spring Doc
 
 ## Annotation(標註、註解)
 
@@ -995,10 +995,13 @@ public class TodoService {
 - H2 屬於記憶體型資料庫，即全部儲存的資料內容是存放在伺服器記憶體中，也因此讀寫效能相對較高，但當伺服器關閉時資料也會立即消失
 - H2 是利用 Java 所設計出的關聯式資料庫，目前是一款具開源、免費、輕量與速度相當快的資料庫引擎，當我們在專案引用時，自動會提供瀏覽器的管理控制台，支援 JDBC、ODBC API 和 SQL語法。
 
+# Day 11 - Spring Boot 模版引擎 x Thymeleaf
+
 ## Thymeleaf
 
 - 是一個Java庫，它是一個XML/HTML5模板引擎，能夠應用轉換於模板檔案，以顯示應用程式產生的資料，撰寫Thymeleaf就像是在寫HTML。
 - 在Web應用程式中，Thymeleaf旨在成為JSP的完全替代品，模版檔案可以直接在瀏覽其中打開。
+- 通常用於生成動態 HTML 頁面
 
 ## @Controller和@RestController差別
 
@@ -1041,6 +1044,56 @@ public class MyRestController {
 
 - @Controller：用於處理視圖的控制器，通常用來返回視圖頁面。適合需要渲染 HTML 頁面的應用。
 - @RestController：用於處理 RESTful API 的控制器，直接返回數據（例如 JSON 或 XML），適合用來構建 RESTful 網絡服務。
+
+## 首先要將thymeleaf 的命名空間導入，在hello.html
+
+- 在使用 Thymeleaf 作為模板引擎時，你需要在 HTML 文件（如 hello.html）中引入 Thymeleaf 的命名空間，以便能夠使用 Thymeleaf 提供的標籤和屬性來處理模板數據。
+- Example:
+  - xmlns:th="http://www.thymeleaf.org"：
+    - 定義 th 作為 Thymeleaf 的命名空間前綴，讓你可以使用像 th:text 這樣的屬性來處理模板中的數據。
+  - th:text="'Hello, World!'"：這是 Thymeleaf 的一個屬性，將動態生成的文本 "Hello, World!" 替換掉 HTML 文件中原有的靜態文本 "Hello, static text"。
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hello Thymeleaf</title>
+</head>
+<body>
+    <h1 th:text="'Hello, World!'">Hello, static text</h1>
+</body>
+</html>
+```
+
+## Model
+
+- 在 Spring MVC 中，Model 是一個接口，用來在Controller和View之間傳遞數據。它的主要功能是將數據綁定到View上，使得View（通常是 HTML 頁面）可以訪問這些數據並進行顯示。
+- 作用
+  - 傳遞數據：
+    - Model 用來將Controller中的數據傳遞到View層。
+    - 可以將任何 Java object（如字符串、集合、實體object等）添加到 Model 中，然後在View模板中使用這些數據。
+  - 存儲和綁定數據：
+    - 在Controller方法中，你可以通過 model.addAttribute("key", value) 將數據存儲到 Model 中，"key" 是數據在View中的名稱，value 是要傳遞的數據。
+  - 與View模板結合：
+    - 當Controller返回一個View名稱時，Spring MVC 會將 Model 中的數據與View模板結合，從而生成最終的 HTML 頁面。
+
+```java
+@Controller
+public class appController {
+
+    @GetMapping("/hello")
+    public String hello(Model model) {
+        model.addAttribute("hello", "Hello World!!!");
+        return "hello";
+    }
+}
+```
+
+```html
+<body>
+<h1 th:text="${hello}"></h1>
+</body>
+```
 
 ## [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
 
