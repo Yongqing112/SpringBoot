@@ -62,6 +62,7 @@
   - [Thymelaeaf 表示式介紹](#thymelaeaf-表示式介紹)
   - [If 條件式](#if-條件式)
   - [可迭代物件](#可迭代物件)
+- [Day 13 - Spring Boot ToDoList 使用Template Engine 實作（1）](#day-13---spring-boot-todolist-使用template-engine-實作1)
   - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
   - [Reference](#reference)
 
@@ -1184,6 +1185,196 @@ public class appController {
 </body>
 </html>
 ```
+
+# Day 13 - Spring Boot ToDoList 使用Template Engine 實作（1）
+
+- Todo.java Entity
+```java
+package com.hello.entity.TodoList;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table
+public class Todo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
+
+    @Column
+    String task;
+
+    @Column
+    Integer status;
+
+    @Column
+    String createTime;
+
+    @Column
+    String updateTime;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTask() {
+        return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+}
+```
+- TodoDao.java Dao
+```java
+package com.hello.dao;
+
+import com.hello.entity.TodoList.Todo;
+import org.springframework.data.repository.CrudRepository;
+
+public interface TodoDao extends CrudRepository<Todo, Integer> {
+}
+```
+
+- TodoService.java Service
+  - getTodo() 透過todoDao.findAll()去操作資料庫回傳所有資料
+  - createTodo() 透過todoDao.save() 存去資料至資料庫
+```java
+package com.hello.service.impl;
+
+import com.hello.dao.TodoDao;
+import com.hello.entity.TodoList.Todo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+@Service
+public class TodoService {
+
+    @Autowired
+    TodoDao todoDao;
+
+    public Iterable<Todo> getTodo(){
+        return todoDao.findAll();
+    }
+
+    public Iterable<Todo> createTodo(Todo todo){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        df.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+
+        String date = df.format(new Date());
+        todo.setCreateTime(date);
+        todo.setUpdateTime(date);
+        todoDao.save(todo);
+        return getTodo();
+    }
+}
+```
+
+- TodoController.java Controller
+  - 透過POST提交了表單。
+  - 提交了表單後，重新刷新頁面時，瀏覽器會詢問「確認重新提交表單」按確定之後就會重新POST /todos一模一樣的內容，這樣畫面列表會多一列，Web表單通過HTTP POST請求提交給server而刷新頁面時會導致內容重複提交，
+  - 可以採取Post / Redirect / Get 設計模式，為的是轉換POST請求，避免二次提交。
+
+```java
+package com.hello.controller.TodoList;
+
+import com.hello.entity.TodoList.Todo;
+import com.hello.service.impl.TodoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@Controller
+public class TodoController {
+
+    @Autowired
+    private TodoService todoService;
+
+    @GetMapping("/todos")
+    public String getTodoList(Model model){
+        Iterable<Todo> todoList = todoService.getTodo();
+        model.addAttribute("todoList", todoList);
+        Todo todo = new Todo();
+        model.addAttribute("todoObject", todo);
+        return  "todoList";
+    }
+
+    @PostMapping("/todos")
+    public String createTodo(@ModelAttribute Todo todo, Model model){
+        Iterable<Todo> allTodoList = todoService.createTodo(todo);
+        Todo emptyTodo = new Todo();
+        model.addAttribute("todoList", allTodoList);
+        model.addAttribute("todoObject", emptyTodo);
+        return "redirect:/todos";
+    }
+}
+```
+
+- todolist.html Template
+```html
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Todo List</title>
+</head>
+
+<body>
+<div class="container">
+    <h2>To Do List</h2>
+    <form class="header" th:action="@{/todos}" method="post" th:object="${todoObject}">
+        <input type="text" id="input" placeholder="New Item..." th:field="*{task}">
+        <button type="submit" class="addBtn">Add</button>
+    </form>
+    <ul th:each="todo: ${todoList}">
+        <li><span th:text="${todo.task}"></span> <span class="close">x</span></li>
+    </ul>
+</div>
+</body>
+</html>
+```
+
 
 ## [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
 
