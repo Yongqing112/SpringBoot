@@ -1,7 +1,7 @@
 package com.hello.controller;
 
 import com.hello.dto.BookRequest;
-import com.hello.entity.Book;
+import com.hello.entity.other.Book;
 import com.hello.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

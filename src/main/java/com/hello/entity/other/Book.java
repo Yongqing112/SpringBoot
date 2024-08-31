@@ -1,6 +1,4 @@
-package com.hello.entity;
-
-import org.springframework.stereotype.Component;
+package com.hello.entity.other;
 
 import java.util.Date;
 

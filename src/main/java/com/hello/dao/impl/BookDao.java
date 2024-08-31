@@ -3,7 +3,7 @@ package com.hello.dao.impl;
 import com.hello.dao.Dao;
 import com.hello.dto.BookRequest;
 import com.hello.dto.Request;
-import com.hello.entity.Book;
+import com.hello.entity.other.Book;
 import com.hello.mapper.BookRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;

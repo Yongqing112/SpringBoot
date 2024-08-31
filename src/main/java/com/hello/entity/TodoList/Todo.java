@@ -1,4 +1,4 @@
-package com.hello.entity;
+package com.hello.entity.TodoList;
 
 import jakarta.persistence.*;
 

@@ -1,7 +1,7 @@
 package com.hello.dao;
 
 import com.hello.dao.impl.StudentDao;
-import com.hello.entity.Student;
+import com.hello.entity.other.Student;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

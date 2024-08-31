@@ -1,6 +1,6 @@
 package com.hello.mapper;
 
-import com.hello.entity.Student;
+import com.hello.entity.other.Student;
 import org.springframework.jdbc.core.RowMapper;
 
 

@@ -1,4 +1,4 @@
-package com.hello.entity;
+package com.hello.entity.printer;
 
 import org.springframework.stereotype.Component;
 

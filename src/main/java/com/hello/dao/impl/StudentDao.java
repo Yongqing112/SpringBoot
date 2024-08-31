@@ -3,7 +3,7 @@ package com.hello.dao.impl;
 import com.hello.dao.Dao;
 import com.hello.dto.Request;
 import com.hello.dto.StudentRequest;
-import com.hello.entity.Student;
+import com.hello.entity.other.Student;
 import com.hello.mapper.StudentRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;

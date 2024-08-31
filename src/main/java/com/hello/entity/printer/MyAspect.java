@@ -1,4 +1,4 @@
-package com.hello.entity;
+package com.hello.entity.printer;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyAspect {
 
-    @Before("execution(* com.hello.entity.HpPrinter.*(..))")
+    @Before("execution(* com.hello.entity.printer.HpPrinter.*(..))")
     public void before() {
         System.out.println("I'm before");
     }
 
 
-    @After("execution(* com.hello.entity.HpPrinter.*(..))")
+    @After("execution(* com.hello.entity.printer.HpPrinter.*(..))")
     public void after() {
         System.out.println("I'm after");
     }
 
-    @Around("execution(* com.hello.entity.HpPrinter.*(..))")
+    @Around("execution(* com.hello.entity.printer.HpPrinter.*(..))")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
         System.out.println("I'm around before");
 

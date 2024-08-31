@@ -1,4 +1,4 @@
-package com.hello.entity;
+package com.hello.entity.other;
 
 public class Student {
     private String name;

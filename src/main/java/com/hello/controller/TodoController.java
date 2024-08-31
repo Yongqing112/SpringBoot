@@ -1,6 +1,6 @@
 package com.hello.controller;
 
-import com.hello.entity.Todo;
+import com.hello.entity.TodoList.Todo;
 import com.hello.service.impl.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

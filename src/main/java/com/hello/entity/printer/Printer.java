@@ -1,4 +1,4 @@
-package com.hello.entity;
+package com.hello.entity.printer;
 
 public interface Printer {
     String print();

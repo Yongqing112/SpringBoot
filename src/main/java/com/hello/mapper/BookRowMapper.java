@@ -1,6 +1,6 @@
 package com.hello.mapper;
 
-import com.hello.entity.Book;
+import com.hello.entity.other.Book;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

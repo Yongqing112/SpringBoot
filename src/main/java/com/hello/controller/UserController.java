@@ -1,8 +1,8 @@
 package com.hello.controller;
 
-import com.hello.entity.Printer;
-import com.hello.entity.Store;
-import com.hello.entity.Student;
+import com.hello.entity.printer.Printer;
+import com.hello.entity.other.Store;
+import com.hello.entity.other.Student;
 import com.hello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

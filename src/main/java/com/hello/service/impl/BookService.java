@@ -2,7 +2,7 @@ package com.hello.service.impl;
 
 import com.hello.dao.Dao;
 import com.hello.dto.BookRequest;
-import com.hello.entity.Book;
+import com.hello.entity.other.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

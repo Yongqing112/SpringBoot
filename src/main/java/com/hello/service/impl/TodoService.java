@@ -1,7 +1,7 @@
 package com.hello.service.impl;
 
 import com.hello.dao.TodoDao;
-import com.hello.entity.Todo;
+import com.hello.entity.TodoList.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

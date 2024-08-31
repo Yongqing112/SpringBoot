@@ -178,7 +178,7 @@
   ```java
   package com.hello.entity;
 
-  import org.springframework.stereotype.Component;
+import com.hello.entity.printer.Printer;   import org.springframework.stereotype.Component;
 
   @Component
   public class BrotherPrinter implements Printer{
@@ -273,18 +273,18 @@
   @Component
   public class MyAspect {
 
-    @Before("execution(- com.hello.entity.HpPrinter.*(..))")
+    @Before("execution(- com.hello.entity.printer.HpPrinter.*(..))")
     public void before() {
       System.out.println("I'm before");
     }
 
 
-    @After("execution(- com.hello.entity.HpPrinter.*(..))")
+    @After("execution(- com.hello.entity.printer.HpPrinter.*(..))")
     public void after() {
       System.out.println("I'm after");
     }
 
-    @Around("execution(- com.hello.entity.HpPrinter.*(..))")
+    @Around("execution(- com.hello.entity.printer.HpPrinter.*(..))")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
       System.out.println("I'm around before");
 
@@ -772,7 +772,7 @@ public class StudentController {
 
   package com.hello.mapper;
 
-  import com.hello.entity.Student;
+  import com.hello.entity.other.Student;
   import org.springframework.jdbc.core.RowMapper;
 
 
