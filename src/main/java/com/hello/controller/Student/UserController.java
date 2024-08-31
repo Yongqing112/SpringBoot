@@ -1,4 +1,4 @@
-package com.hello.controller;
+package com.hello.controller.Student;
 
 import com.hello.entity.printer.Printer;
 import com.hello.entity.other.Store;

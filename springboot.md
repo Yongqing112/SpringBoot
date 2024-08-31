@@ -58,6 +58,10 @@
     - [總結](#總結)
   - [首先要將thymeleaf 的命名空間導入，在hello.html](#首先要將thymeleaf-的命名空間導入在hellohtml)
   - [Model](#model-1)
+- [Day 12 - Spring Boot Thymeleaf 小小實作](#day-12---spring-boot-thymeleaf-小小實作)
+  - [Thymelaeaf 表示式介紹](#thymelaeaf-表示式介紹)
+  - [If 條件式](#if-條件式)
+  - [可迭代物件](#可迭代物件)
   - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
   - [Reference](#reference)
 
@@ -1093,6 +1097,92 @@ public class appController {
 <body>
 <h1 th:text="${hello}"></h1>
 </body>
+```
+
+# Day 12 - Spring Boot Thymeleaf 小小實作
+
+## Thymelaeaf 表示式介紹
+
+- 變數表示式
+- 選擇或星號表示式，類似變數表示式，但上層需要有一個變數物件，子層承接上下文。
+- ![alt text](img/th_object.png)
+  ```html
+  <h1>顯示資料</h1>
+  <p th:text="'Name：' + ${person.name}"></p>
+  <p th:text="'Password：'+ ${person.password}"></p>
+  <p></p>
+  ```
+- URL表示式，把一個資訊新增到URL中
+- Example:
+  - th:action="@{/add}" 觸發submit 時，form action 導至 /add 路徑，form 方法為POST，並且會將表單數據提交到 /add
+  ```html
+  <h2>Add Form</h2>
+  <form action="#" th:action="@{/add}" th:object="${person}" method="post">
+      <input type="text" th:field="*{name}"/>
+      <input type="password" th:field="*{password}"/>
+      <input type="submit"/>
+  </form>
+  ```
+
+## If 條件式
+
+```java
+@Controller
+public class appController {
+	@GetMapping("person")
+	    public String showGender(Model model) {
+	        model.addAttribute("gender", "female");
+	        return "person";
+	 }
+}
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+		<p th:if="${gender} == 'male'">我是男生</p>
+		<p th:if="${gender} == 'female'">我是女生</p>
+</body>
+</html>
+```
+
+## 可迭代物件
+
+```java
+@Controller
+public class appController {
+    @GetMapping("list")
+    public String listNumber (Model model) {
+        List<String> list = new ArrayList<>();
+        for(int i = 0; i<= 10; i++) {
+            list.add("This is ArrayList" + i);
+        }
+        model.addAttribute("list", list);
+        return "list";
+    }
+}
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+   <!--用th:each接收一個可迭代的物件，將thymeleaf傳遞過來的參數"list"，別名為i-->
+    <ul th:each="i:${list}">
+        <!--將i渲染至畫面-->
+        <li th:text="${i}">
+        </li>
+    </ul>
+</body>
+</html>
 ```
 
 ## [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)

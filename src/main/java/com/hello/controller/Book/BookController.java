@@ -1,4 +1,4 @@
-package com.hello.controller;
+package com.hello.controller.Book;
 
 import com.hello.dto.BookRequest;
 import com.hello.entity.other.Book;

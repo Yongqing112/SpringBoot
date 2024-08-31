@@ -1,4 +1,4 @@
-package com.hello.controller;
+package com.hello.controller.Student;
 
 import com.hello.dto.StudentRequest;
 import com.hello.entity.other.Student;
