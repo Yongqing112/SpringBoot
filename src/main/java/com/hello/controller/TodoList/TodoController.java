@@ -5,15 +5,22 @@ import com.hello.service.impl.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class TodoController {
 
     @Autowired
     private TodoService todoService;
+
+    @PostMapping("/todos")
+    public String createTodo(@ModelAttribute Todo todo, Model model){
+        Iterable<Todo> allTodoList = todoService.createTodo(todo);
+        Todo emptyTodo = new Todo();
+        model.addAttribute("todoList", allTodoList);
+        model.addAttribute("todoObject", emptyTodo);
+        return "redirect:/todos";
+    }
 
     @GetMapping("/todos")
     public String getTodoList(Model model){
@@ -24,12 +31,15 @@ public class TodoController {
         return  "todoList";
     }
 
-    @PostMapping("/todos")
-    public String createTodo(@ModelAttribute Todo todo, Model model){
-        Iterable<Todo> allTodoList = todoService.createTodo(todo);
-        Todo emptyTodo = new Todo();
-        model.addAttribute("todoList", allTodoList);
-        model.addAttribute("todoObject", emptyTodo);
+    @PutMapping("/todos/{id}")
+    public String updateTodo(@PathVariable Integer id, @RequestBody Todo todo){
+        todoService.updateTodo(id, todo);
+        return "redirect:/todos";
+    }
+
+    @DeleteMapping("/todos/{id}")
+    public String deleteTodo(@PathVariable Integer id){
+        todoService.deleteTodo(id);
         return "redirect:/todos";
     }
 }
