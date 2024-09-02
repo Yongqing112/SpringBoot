@@ -63,8 +63,17 @@
   - [If 條件式](#if-條件式)
   - [可迭代物件](#可迭代物件)
 - [Day 13 - Spring Boot ToDoList 使用Template Engine 實作（1）](#day-13---spring-boot-todolist-使用template-engine-實作1)
-  - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
-  - [Reference](#reference)
+- [Day 15 - Spring Boot 向前後端分離say hi ~](#day-15---spring-boot-向前後端分離say-hi-)
+  - [前後端分離](#前後端分離)
+  - [Web Server](#web-server)
+    - [內建 Web 伺服器的優點](#內建-web-伺服器的優點)
+- [Day 16 - Spring Boot 決定就是 RESTful API 了](#day-16---spring-boot-決定就是-restful-api-了)
+  - [如何設計路由？](#如何設計路由)
+- [Day 18 - Spring Boot 單元測試 Service層使用Mockito](#day-18---spring-boot-單元測試-service層使用mockito)
+  - [Mockito 是什麼？](#mockito-是什麼)
+  - [SpringBoot 單元測試中使用 Mockito 測試Service](#springboot-單元測試中使用-mockito-測試service)
+- [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
+- [Reference](#reference)
 
 ## Annotation(標註、註解)
 
@@ -576,6 +585,14 @@ import com.hello.entity.printer.Printer;   import org.springframework.stereotype
 ## [什麼是 RESTful API？](https://ithelp.ithome.com.tw/articles/10335071)
 
 - 符合 REST 風格的 API
+- 是一種網路架構風格，
+  - 使用 HTTP、URI、JSON、HTML，API設計具有整體一致性，易於維護、擴展，充分運用HTTP協定的特點，
+  - 並使用 HTTP status code 來代表該資源的狀態，在不同軟體間，網際網路互相傳遞資源
+- RESTful API 會使用統一的介面，有助於讓用戶端與服務端實作分離，會使用 JSON 作為交換資料格式
+- REST是設計風格而不是不是設計 API 的標準規範
+  - 目的是為了不同軟體間能夠傳遞資料，
+  - 簡單並清晰的設計原則，可以讓溝通更加順暢，
+  - 可以依照開發需求修改相對應的風格。
 - RESTful API 的設計
   - 使用 Http method 表示動作
     - POST、GET、PUT、DELETE 分別去對應到資料庫的 Create、Read、Update、Delete 操作
@@ -593,7 +610,6 @@ import com.hello.entity.printer.Printer;   import org.springframework.stereotype
     - 其實就是在 class 上面加上 @RestController，這樣就可以正確的返回 Json 格式了
 
     ![alt text](img/restful_return_json.png)
-- **RESTful API 的目的，是為了「簡化工程師之間的溝通成本」，並不是設計 API 的標準規範**
 
 ## 在 Spring Boot 中設計和實作 RESTful API
 
@@ -837,7 +853,7 @@ public class StudentController {
 
 ## 什麼是 MVC 架構模式？
 
-- 將一個系統，去拆分成 **「Model、View、Controller」*- 三個部分，並且讓每一個部分都各自負責不同的功能
+- 將一個系統，去拆分成 **「Model、View、Controller」** 三個部分，並且讓每一個部分都各自負責不同的功能
 
 ![alt text](img/MVC.png)
 
@@ -1268,6 +1284,7 @@ public interface TodoDao extends CrudRepository<Todo, Integer> {
 - TodoService.java Service
   - getTodo() 透過todoDao.findAll()去操作資料庫回傳所有資料
   - createTodo() 透過todoDao.save() 存去資料至資料庫
+
 ```java
 package com.hello.service.impl;
 
@@ -1283,24 +1300,24 @@ import java.util.TimeZone;
 @Service
 public class TodoService {
 
-    @Autowired
-    TodoDao todoDao;
+  @Autowired
+  TodoDao todoDao;
 
-    public Iterable<Todo> getTodo(){
-        return todoDao.findAll();
-    }
+  public Iterable<Todo> getTodo() {
+    return todoDao.findAll();
+  }
 
-    public Iterable<Todo> createTodo(Todo todo){
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  public Iterable<Todo> createTodo(Todo todo) {
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        df.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+    df.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
 
-        String date = df.format(new Date());
-        todo.setCreateTime(date);
-        todo.setUpdateTime(date);
-        todoDao.save(todo);
-        return getTodo();
-    }
+    Date date = df.format(new Date());
+    todo.setCreateTime(date);
+    todo.setUpdateTime(date);
+    todoDao.save(todo);
+    return getTodo();
+  }
 }
 ```
 
@@ -1452,10 +1469,113 @@ https://adventure-works.com/createOrder // Avoid
     - 若刪除成功則會回傳204（No Content）
     - 該資源不存在則會回傳404（Not Found）
 
+# Day 18 - Spring Boot 單元測試 Service層使用Mockito
 
-## [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
+- 測試Service層所處理後的行為是否符合我們預期結果，
+- 由於目前 Service層會呼叫Dao層來操作資料庫，
+- 所以我們會需要建立一個假的Dao物件，來模擬Dao操作資料返回的結果，
+- 單純測試Service的運作邏輯是否符合我們預期。
 
-## Reference
+![alt text](img/test_Service.png)
+
+## Mockito 是什麼？
+
+- 一種 Java mock 框架，主要就是用來做 mock 測試的
+- 以模擬任何 Spring 管理的 bean、模擬方法的返回值、模擬拋出異常…等，從而可以校驗出這個 mock 對象是否有被正確的順序調用，以及按照期望的參數被調用。
+```java
+Mockito.when( 對象.方法名() ).thenReturn( 自定義結果 )
+```
+
+## SpringBoot 單元測試中使用 Mockito 測試Service
+- 建立Spring Boot 專案時已經引入 spring-boot-starter-test dependency時，通常包含了常用的模組 Junit、Spring Test、AssertJ、Mockito 等。
+
+```yml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+- Example: updateTodo
+```java
+@SpringBootTest
+public class TestTodoService {
+    @Autowired
+    TodoService todoService;
+
+    @MockBean
+    TodoDao todoDao;
+
+    @Test
+    public void testUpdateTodoSuccess(){
+        // 準備資料
+        Todo todo = new Todo();
+        todo.setId(1);
+        todo.setTask("寫鐵人賽文章");
+        todo.setStatus(1);
+        Optional<Todo> resTodo = Optional.of(todo);
+
+        // 定義模擬呼叫todoDao.save(todo) 的回傳結果
+        Mockito.when(todoDao.findById(1)).thenReturn(resTodo);
+
+        // [Arrange] 更改的資料
+        todo.setStatus(2);
+
+        // [Act]
+        boolean actualUpdateRlt = todoService.updateTodo(1, todo);
+
+        // [Assert]
+        assertEquals(true, actualUpdateRlt);
+
+    }
+
+    @Test
+    public void testUpdateTodoNotExistId(){
+        // 準備更改的資料
+        Todo todo = new Todo();
+        todo.setStatus(2);
+        Optional<Todo> resTodo = Optional.of(todo);
+
+        // 定義模擬呼叫todoDao.save(todo) 的回傳結果
+        Mockito.when(todoDao.findById(100)).thenReturn(Optional.empty());
+
+        // [Act]
+        boolean actualUpdateRlt = todoService.updateTodo(100, todo);
+
+        // [Assert]
+        assertEquals(false, actualUpdateRlt);
+
+    }
+
+    @Test
+    public void testUpdateTodoOccurException(){
+        // 準備更改的資料
+        Todo todo = new Todo();
+        todo.setId(1);
+        todo.setStatus(1);
+        Optional<Todo> resTodo = Optional.of(todo);
+
+        // 定義模擬呼叫todoDao.save(todo) 的回傳結果
+        Mockito.when(todoDao.findById(1)).thenReturn(resTodo);
+        todo.setStatus(2);
+
+        // 模擬呼叫todoDao.save(todo)時發生NullPointerException例外
+        doThrow(NullPointerException.class).when(todoDao).save(todo);
+
+        // [Act]
+        boolean actualUpdateRlt = todoService.updateTodo(1, todo);
+
+        // [Assert]
+        assertEquals(false, actualUpdateRlt);
+
+    }
+}
+```
+
+# [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
+
+# Reference
 
 - [Spring Boot 零基礎入門 系列](https://ithelp.ithome.com.tw/articles/10339561)
 
