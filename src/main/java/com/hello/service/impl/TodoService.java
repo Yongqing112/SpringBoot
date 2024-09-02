@@ -5,9 +5,7 @@ import com.hello.entity.TodoList.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.Optional;
 
 @Service
 public class TodoService {
@@ -15,46 +13,51 @@ public class TodoService {
     @Autowired
     TodoDao todoDao;
 
-    public Iterable<Todo> createTodo(Todo todo){
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        df.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-
-        String date = df.format(new Date());
-        todo.setCreateTime(date);
-        todo.setUpdateTime(date);
-        todoDao.save(todo);
-        return getTodo();
+    public Integer createTodo(Todo todo){
+        Todo rltTodo = todoDao.save(todo);
+        return rltTodo.getId();
     }
 
-    public Iterable<Todo> getTodo(){
+    public Iterable<Todo> getTodos(){
         return todoDao.findAll();
     }
 
-    public Todo findById(Integer id){
-        return todoDao.findById(id).get();
+    public Optional<Todo> findById(Integer id){
+        Optional<Todo> todo = todoDao.findById(id);
+        return todo;
     }
 
-    public Todo updateTodo(Integer id, Todo todo){
-        try {
-            Todo resTodo = findById(id);
-            Integer status = todo.getStatus();
-            resTodo.setStatus(status);
-            return todoDao.save(resTodo);
+    public Boolean updateTodo(Integer id, Todo todo){
+        Optional<Todo> isExistTodo = findById(id);
+        if(!isExistTodo.isPresent()){
+            return false;
         }
-        catch (Exception exception){
+
+        Todo newTodo = isExistTodo.get();
+        if(newTodo.getStatus() == null){
             return null;
+        }
+        newTodo.setStatus(todo.getStatus());
+        try{
+            todoDao.save(newTodo);
+            return true;
+        }
+        catch (Exception e){
+            return false;
         }
     }
 
     public Boolean deleteTodo(Integer id){
-        try {
-            Todo resTodo = findById(id);
+        Optional<Todo> findTodo = findById(id);
+        if(!findTodo.isPresent()){
+            return false;
+        }
+        try{
             todoDao.deleteById(id);
             return true;
         }
-        catch (Exception exception){
-            return null;
+        catch (Exception e){
+            return false;
         }
     }
 }
