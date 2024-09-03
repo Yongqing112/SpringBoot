@@ -72,6 +72,8 @@
 - [Day 18 - Spring Boot 單元測試 Service層使用Mockito](#day-18---spring-boot-單元測試-service層使用mockito)
   - [Mockito 是什麼？](#mockito-是什麼)
   - [SpringBoot 單元測試中使用 Mockito 測試Service](#springboot-單元測試中使用-mockito-測試service)
+- [Day 19 - Spring Boot HTTP的請求也可以模擬測試？使用MockMvc](#day-19---spring-boot-http的請求也可以模擬測試使用mockmvc)
+  - [設定Controller測試](#設定controller測試)
 - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
 - [Reference](#reference)
 
@@ -1570,6 +1572,69 @@ public class TestTodoService {
         assertEquals(false, actualUpdateRlt);
 
     }
+}
+```
+
+# Day 19 - Spring Boot HTTP的請求也可以模擬測試？使用MockMvc
+
+- 於Controller是透過用戶端使用HTTP呼叫的，所以我們要模擬網路的形式，使用MockMvc 來實作Controller層的測試。
+- MockMvc這個spring framework 實現了對Http請求的模擬端點測試，能夠直接使用網路的形式，轉換到Controller的呼叫，不依賴網路環境，提供了一套驗證的工具，這樣可以使得請求的驗證統一且方便。
+
+![alt text](img/test_Controller.png)
+
+## 設定Controller測試
+
+- @AutoConfigureMockMvc 啟動時自動注入MockMvc
+- @MockBean 創造一個假的Service對象
+- MockMvc的屬性
+  - mockMvc.perform 執行一個請求，並對應到controller。
+  - mockMvc.andExpect 期待並驗證回應是否正確。
+  - mockMvc.andReturn 最後回應的值(body)，可以再利用這個值，做其他Assert驗證
+
+```java
+@SpringBootTest
+@AutoConfigureMockMvc
+public class TestTodoController {
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @Autowired
+    ObjectMapper objectMapper;
+    
+    @MockBean
+    TodoService todoService;
+}
+```
+
+- Example:
+  - 遇到中文亂碼問題
+    - 在getContentAsString()加上Charset.defaultCharset()
+    - getContentAsString(Charset.defaultCharset())
+
+```java
+@Test
+public void testGetTodos() throws Exception {
+    // 設定資料
+    List<Todo> expectedList = new ArrayList();
+    Todo todo = new Todo();
+    todo.setTask("洗衣服");
+    todo.setId(1);
+    expectedList.add(todo);
+
+    // 模擬todoService.getTodos() 回傳 expectedList
+    Mockito.when(todoService.getTodos()).thenReturn(expectedList);
+
+    // 模擬呼叫[GET] /api/todos
+    String returnString = mockMvc.perform(MockMvcRequestBuilders.get("/api/todos")
+                    .accept(MediaType.APPLICATION_JSON ))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString(Charset.defaultCharset());
+
+    Iterable<Todo> actualList = objectMapper.readValue(returnString, new TypeReference<Iterable<Todo>>() {
+    });
+
+    // 判定回傳的body是否跟預期的一樣
+    assertEquals(expectedList, actualList);
 }
 ```
 
