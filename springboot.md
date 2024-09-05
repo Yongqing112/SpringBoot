@@ -1606,7 +1606,7 @@ public class TestTodoController {
 }
 ```
 
-- Example:
+- GetTodos:
   - 遇到中文亂碼問題
     - 在getContentAsString()加上Charset.defaultCharset()
     - getContentAsString(Charset.defaultCharset())
@@ -1637,6 +1637,108 @@ public void testGetTodos() throws Exception {
     assertEquals(expectedList, actualList);
 }
 ```
+
+- CreateTodo
+
+```java
+@Test
+public void testCreateTodo() throws Exception{
+    //設定資料
+    Todo todo = new Todo();
+    todo.setTask("洗衣服");
+    todo.setId(1);
+    todo.setStatus(1);
+
+    JSONObject todoObject = new JSONObject();
+    todoObject.put("id", 1);
+    todoObject.put("task", "洗衣服");
+
+    // 模擬todoService.createTodo(todo) 回傳 id 1
+    Mockito.when(todoService.createTodo(any())).thenReturn(todo.getId());
+
+    // 模擬呼叫[POST] /api/todos
+    String actual = mockMvc.perform(MockMvcRequestBuilders.post("/api/todos")
+            .accept(MediaType.APPLICATION_JSON) //response 設定型別
+            .contentType(MediaType.APPLICATION_JSON) // request 設定型別
+            .content(String.valueOf(todoObject))) // body 內容
+            .andExpect(status().isCreated()) // 預期回應的status code 為 201(Created)
+            .andReturn().getResponse().getContentAsString();
+
+    assertEquals(1, Integer.parseInt(actual));
+}
+```
+
+- UodateTodo
+
+```java
+@Test
+public void testUpdateTodoSuccess() throws Exception{
+    // 模擬todoService.updateTodo(1, xxx) 成功，回傳true
+    Mockito.when(todoService.updateTodo(eq(1), any())).thenReturn(true);
+
+    JSONObject todoObject = new JSONObject();
+    todoObject.put("id", 1);
+    todoObject.put("task", "洗衣服");
+    todoObject.put("status", 1);
+
+    // 模擬呼叫[PUT] /api/todos/{id}
+    mockMvc.perform(MockMvcRequestBuilders.put("/api/todos/1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON) // request 設定型別
+            .content(String.valueOf(todoObject))) // body 內容
+            .andExpect(status().isOk()); // 預期回應的status code 為 200(Ok)
+}
+
+@Test
+public void testUpdateTodoIdNotExist() throws Exception{
+    // 模擬todoService.updateTodo(1, xxx) 成功，回傳true
+    Mockito.when(todoService.updateTodo(eq(100), any())).thenReturn(false);
+
+    JSONObject todoObject = new JSONObject();
+    todoObject.put("id", 1);
+    todoObject.put("task", "洗衣服");
+    todoObject.put("status", 1);
+
+    // 模擬呼叫[PUT] /api/todos/{id}
+    mockMvc.perform(MockMvcRequestBuilders.put("/api/todos/100")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON) // request 設定型別
+                    .content(String.valueOf(todoObject))) // body 內容
+            .andExpect(status().isBadRequest()); // 預期回應的status code 為 200(Ok)
+}
+```
+
+- DeleteTodo
+
+```java
+@Test
+public void testDeleteTodo() throws Exception{
+    // 模擬todoService.deleteTodo(1) 成功回傳true
+    Mockito.when(todoService.deleteTodo(1)).thenReturn(true);
+
+    // 模擬呼叫[DELETE] /api/todos/{id}
+    mockMvc.perform(MockMvcRequestBuilders.delete("/api/todos/1")
+            .accept(MediaType.APPLICATION_JSON_UTF8) //response 設定型別
+            .contentType(MediaType.APPLICATION_JSON)) // request 設定型別
+            .andExpect(status().isNoContent()); // 預期回應的status code 應為 204(No Content)
+}
+
+@Test
+public void testDeleteTodoIdNotExist() throws Exception{
+    //
+    Mockito.when(todoService.deleteTodo(100)).thenReturn(false);
+
+    //
+    mockMvc.perform(MockMvcRequestBuilders.delete("/api/todos/100")
+            .accept(MediaType.APPLICATION_JSON_UTF8) //response 設定型別
+            .contentType(MediaType.APPLICATION_JSON)) // request 設定型別
+            .andExpect(status().isBadRequest()); // 預期回應的status code 為 400(Bad Request)
+}
+```
+
+
+
+
 
 # [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
 
