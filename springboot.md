@@ -74,6 +74,9 @@
   - [SpringBoot 單元測試中使用 Mockito 測試Service](#springboot-單元測試中使用-mockito-測試service)
 - [Day 19 - Spring Boot HTTP的請求也可以模擬測試？使用MockMvc](#day-19---spring-boot-http的請求也可以模擬測試使用mockmvc)
   - [設定Controller測試](#設定controller測試)
+- [Day 21 - Spring Boot Swagger API 文件神器](#day-21---spring-boot-swagger-api-文件神器)
+  - [Dependency](#dependency)
+  - [Controller](#controller-2)
 - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
 - [Reference](#reference)
 
@@ -1736,6 +1739,37 @@ public void testDeleteTodoIdNotExist() throws Exception{
 }
 ```
 
+# Day 21 - Spring Boot Swagger API 文件神器
+
+## Dependency
+
+```xml
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.6.0</version>
+</dependency>
+```
+
+## Controller
+
+```java
+@Tag(name = "Todo List api")
+@RestController
+@RequestMapping("/api")
+public class TodoController {
+
+    @Autowired
+    private TodoService todoService;
+
+    @PostMapping("/todos")
+    @Operation(summary = "createTodo")
+    public ResponseEntity createTodo(@RequestBody Todo todo){
+        Integer rlt = todoService.createTodo(todo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(rlt);
+    }
+}
+```
 
 
 
