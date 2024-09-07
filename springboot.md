@@ -77,6 +77,8 @@
 - [Day 21 - Spring Boot Swagger API 文件神器](#day-21---spring-boot-swagger-api-文件神器)
   - [Dependency](#dependency)
   - [Controller](#controller-2)
+- [Day 23 - Spring Boot 快速建立前端ToDoList專案－ReactJS](#day-23---spring-boot-快速建立前端todolist專案reactjs)
+  - [前端框架－ReactJS 快速建立一個專案](#前端框架reactjs-快速建立一個專案)
 - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
 - [Reference](#reference)
 
@@ -1769,6 +1771,114 @@ public class TodoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(rlt);
     }
 }
+```
+
+# Day 23 - Spring Boot 快速建立前端ToDoList專案－ReactJS
+
+## 前端框架－ReactJS 快速建立一個專案
+
+* ReactJS是一個JavaScript library， 透過組件方式組合成前端UI介面，可重複使用的組件，很像樂高積木一樣，從微小組件組合成更大的組件。
+* 每個組件都有自己的業務邏輯，維護程式碼較容易。
+  * Step 1: 安裝Node.js 下載點
+  * Step 2: 建立React模版專案
+    * 在cmd輸入以下指令(我是在開Sprint Boot的Intellij輸入)
+    * npx create-react-app todolist
+    * cd todolist
+    * npm start
+      * 進入http://localhost:3000/
+* 教學並沒有提供CSS
+
+* 資料夾結構
+
+```
+|-- public
+			|-- index.html # default html
+|-- src
+    |-- assets  # 靜態檔案
+        |-- css # css style
+        |-- image # 圖片檔
+		    |-- components # 組件
+    |-- pages # 頁面檔案
+    |-- App.js # 根組件
+    |-- index.js # 程式進入點
+|-- package.json # 套件配置
+```
+
+* TitleBox.js
+```js
+import React from 'react';
+
+const TitleBox = () => {
+    return (
+        <div className="title-box">
+            <p className="date">2020-10-02</p>
+            <p className="quote">溫暖是一種感恩，以熾熱的心去感化另一顆心。</p>
+        </div>
+    );
+};
+
+export default TitleBox;
+```
+
+* TodoForm.js
+```js
+import React from 'react';
+
+const TodoForm = () => {
+    return (
+        <form class="header">
+        <input type="text" id="input" placeholder="New Item..." />
+        <button type="submit" class="addBtn">
+            Add
+        </button>
+    </form>
+    )
+}
+
+export default TodoForm;
+```
+
+* TodoItems.js
+```js
+import React from 'react';
+
+const TodoItems = ()=> {
+    return (
+        <ul>
+        <li>
+            洗衣服 <span className="badge bg-red">生活</span>
+            <span class="close">X</span>
+        </li>
+        <li>
+            鐵人賽文章<span className="badge bg-blue">學習</span>
+            <span class="close">X</span>
+        </li>
+    </ul>
+    )
+}
+
+export default TodoItems;
+```
+* ToDo.js 把組件組起來，並給根組件使用
+```js
+import React from 'react';
+import TitleBox from '../components/TitleBox'
+import TodoForm from '../components/TodoForm'
+import TodoItems from '../components/TodoItems'
+
+const ToDoList = () => {
+    return (
+        <div className="container">
+            <TitleBox/>
+            <div className="todo-box">
+                <TodoForm/>
+                <TodoItems/>
+            </div>
+        </div>
+    );
+};
+
+export default ToDoList;
 ```
 
 

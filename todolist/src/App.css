@@ -1,0 +1,67 @@
+/* App.css */
+
+.title-box {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    text-align: center;
+}
+
+.date {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.quote {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #e9ecef;
+}
+
+.addBtn {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.addBtn:hover {
+    background-color: #0056b3;
+}
+
+.todo-box {
+    margin: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.bg-red {
+    background-color: red;
+    color: white;
+}
+
+.bg-blue {
+    background-color: blue;
+    color: white;
+}
+
+.close {
+    cursor: pointer;
+    color: red;
+    margin-left: 10px;
+}
