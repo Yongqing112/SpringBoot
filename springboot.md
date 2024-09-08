@@ -79,6 +79,7 @@
   - [Controller](#controller-2)
 - [Day 23 - Spring Boot 快速建立前端ToDoList專案－ReactJS](#day-23---spring-boot-快速建立前端todolist專案reactjs)
   - [前端框架－ReactJS 快速建立一個專案](#前端框架reactjs-快速建立一個專案)
+- [Day 24 - Spring Boot ReactJS x ToDoList API 串起來](#day-24---spring-boot-reactjs-x-todolist-api-串起來)
 - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
 - [Reference](#reference)
 
@@ -1881,7 +1882,14 @@ const ToDoList = () => {
 export default ToDoList;
 ```
 
+# Day 24 - Spring Boot ReactJS x ToDoList API 串起來
 
+* 新增了 src/service/todos.js 與 src/service/helper.js
+* 對原有的components修改成動態的
+* 並把之前html的style.css複製到App.css
+* 註記
+  * 修改完package.json後要記得重新啟動(npm start)
+  * 因為這部分不會自動更新，自動更新的部分應該只有網頁內容
 
 
 # [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
