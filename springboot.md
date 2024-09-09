@@ -80,6 +80,9 @@
 - [Day 23 - Spring Boot 快速建立前端ToDoList專案－ReactJS](#day-23---spring-boot-快速建立前端todolist專案reactjs)
   - [前端框架－ReactJS 快速建立一個專案](#前端框架reactjs-快速建立一個專案)
 - [Day 24 - Spring Boot ReactJS x ToDoList API 串起來](#day-24---spring-boot-reactjs-x-todolist-api-串起來)
+- [Day 25 - Spring Boot logging 記錄記起來](#day-25---spring-boot-logging-記錄記起來)
+  - [Maven dependancy](#maven-dependancy)
+  - [建立Logger](#建立logger)
 - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
 - [Reference](#reference)
 
@@ -1890,6 +1893,60 @@ export default ToDoList;
 * 註記
   * 修改完package.json後要記得重新啟動(npm start)
   * 因為這部分不會自動更新，自動更新的部分應該只有網頁內容
+* [Step 17: ReactJS x ToDoList API 串起來](https://github.com/Yongqing112/SpringBoot/commit/261152c250d89b5ec95cce06c04ec2870e34dc2b)
+
+# Day 25 - Spring Boot logging 記錄記起來
+
+* Spring Boot使用了Apache Commons logging為內部log
+* 默認配置有Java Util Logging，Log4J，Log4J2和Logback。
+* SLF4J（Simple Logging Facade For Java）
+  * 一個可作為各種日誌記錄框架，定義了統一抽象介面，Logback效率更高並能運行在諸多環境，並實作了SLF4J API。
+
+## Maven dependancy
+
+```yml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-logging</artifactId>
+</dependency>
+```
+
+* 但是在我們一開始建立專案時，spring-boot-starter 就已經有引入spring-boot-starter-logging ，Spring Boot 預設的日誌框架為Logback。
+
+## 建立Logger
+
+```java
+private static final Logger logger = LoggerFactory.getLogger(Example.class);
+```
+
+* 使用logger 提供的方法
+  * logger.info()
+  * logger.warn()
+  * logger.error()
+  * logger.debug()
+* Example:
+```java
+@RestController
+@RequestMapping("/api")
+public class TodoController {
+		private static final Logger logger
+		            = LoggerFactory.getLogger(TodoController.class);
+		@Autowired
+		    TodoService todoService;
+
+		@GetMapping("/todos")
+    public ResponseEntity getTodos() {
+        Iterable<Todo> todoList = todoService.getTodos();
+        logger.info("Hi...");
+        logger.error("I am an error");
+        logger.warn("Warning!.");
+        return ResponseEntity.status(HttpStatus.OK).body(todoList);
+    }
+}
+```
+
+* [自定義logger](https://ithelp.ithome.com.tw/articles/10248974)
+
 
 
 # [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)

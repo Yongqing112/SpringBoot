@@ -4,7 +4,10 @@ import com.hello.entity.TodoList.Todo;
 import com.hello.service.impl.TodoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,8 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class TodoController {
 
+    private static final Logger logger = LoggerFactory.getLogger(Example.class);
+
     @Autowired
     private TodoService todoService;
 
@@ -23,6 +28,9 @@ public class TodoController {
     @Operation(summary = "createTodo")
     public ResponseEntity createTodo(@RequestBody Todo todo){
         Integer rlt = todoService.createTodo(todo);
+        logger.info("Hi...");
+        logger.error("I am an error");
+        logger.warn("Warning!.");
         return ResponseEntity.status(HttpStatus.CREATED).body(rlt);
     }
 
