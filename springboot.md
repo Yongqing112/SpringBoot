@@ -463,8 +463,8 @@ import com.hello.entity.printer.Printer;   import org.springframework.stereotype
   - 將該方法的返回值，改成是一個「Java 中的物件」
 
   ```java
-    @RequestMapping("/user")
-    public Student user(){
+    @RequestMapping("/uUser")
+    public Student uUser(){
         Student student = new Student();
         student.setName("Scoot");
         return student;
@@ -612,9 +612,9 @@ import com.hello.entity.printer.Printer;   import org.springframework.stereotype
     - Example:
       - 有一個 API GET /users
         - 根據我們剛剛所介紹的 REST 風格，知道 GET 是去對應到資料庫的「Read 查詢」操作，
-        - 因此這個 API GET /users 的含義，就是去「取得所有的 user」
+        - 因此這個 API GET /users 的含義，就是去「取得所有的 uUser」
       - 另一個 API GET /users/123
-        - 這個 API 的含義，就是去「取得在所有的 user 裡面，user id 為 123 的那個 user」
+        - 這個 API 的含義，就是去「取得在所有的 uUser 裡面，uUser id 為 123 的那個 uUser」
       ![alt text](img/restful_url.png)
   - 使用 Json 或是 Xml 回傳
     - REST 風格會要求後端程式所回傳的 response body，必須要是 Json 或是 Xml 的格式
@@ -763,7 +763,7 @@ public class StudentController {
            ```java
                @RequestMapping("/students/insert/map")
               public String insertMap(@RequestBody Student student){
-                  String sql = "INSERT INTO user(id, user_name) VALUES (:studentId, :studentName)";
+                  String sql = "INSERT INTO uUser(id, user_name) VALUES (:studentId, :studentName)";
                   Map<String, Object> map = new HashMap<>();
                   map.put("studentId", student.getId());
                   map.put("studentName", student.getName());
@@ -786,7 +786,7 @@ public class StudentController {
 
     @RequestMapping("/students/insert")
     public String insert(){
-        String sql = "INSERT INTO user(id, user_name) VALUES (3, 'John')";
+        String sql = "INSERT INTO uUser(id, user_name) VALUES (3, 'John')";
         Map<String, Object> map = new HashMap<>();
         namedParameterJdbcTemplate.update(sql, map);
         return "執行 INSERT SQL";
@@ -826,7 +826,7 @@ public class StudentController {
   ```java
     @RequestMapping("/students/query/{id}")
     public List<Student> query(@PathVariable String id){
-        String sql = "SELECT id, user_name from user where id= :studentId";
+        String sql = "SELECT id, user_name from uUser where id= :studentId";
         Map<String, Object> map = new HashMap<>();
         RowMapper<Student> rowMapper = new StudentRowMapper();
         map.put("studentId", id);

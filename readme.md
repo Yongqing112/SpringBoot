@@ -123,7 +123,7 @@
 	</dependency>
 	```
 
-* add src/main/resources/mapper/user/UserMapper.xml
+* add src/main/resources/mapper/uUser/UserMapper.xml
 	```
 	<?xml version="1.0" encoding="UTF-8" ?>
 	<!DOCTYPE mapper
@@ -133,7 +133,7 @@
 	<!--    id is UserMapper.queryUserName()    -->
 	<!--    #{id} is UserMapper.queryUserName() parameter "String id"    -->
 		<select id="queryUserName" resultType="java.lang.String" parameterType="java.lang.String">
-			select user_name from user where id=#{id}
+			select user_name from uUser where id=#{id}
 		</select>
 	</mapper>
 	```
@@ -194,7 +194,7 @@
 	```
 	  datasource:
 	#    hello is database name
-		url: jdbc:mysql://localhost:3306/hello?user=root
+		url: jdbc:mysql://localhost:3306/hello?uUser=root
 		username: root
 		password: springboot
 

@@ -8,6 +8,6 @@
 <!--    resultType is return type    -->
 <!--    parameterType is input parameter type    -->
     <select id="queryUserName" resultType="java.lang.String" parameterType="java.lang.String">
-        select user_name from user where id=#{id}
+        select user_name from uUser where id=#{id}
     </select>
 </mapper>
