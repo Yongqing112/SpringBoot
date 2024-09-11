@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -34,6 +35,12 @@ public class Todo {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="todoUser_id")
     private Todo_User todoUser;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "todos_tag",
+            joinColumns = {@JoinColumn(name = "tag_id")},
+            inverseJoinColumns = {@JoinColumn(name = "todo_id")})
+    List<Tag> tags;
 
     @JsonIgnore
     public Todo_User getUser() {

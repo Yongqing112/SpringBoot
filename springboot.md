@@ -85,6 +85,8 @@
   - [建立Logger](#建立logger)
 - [Day 26 - Spring Boot @OneToMany X @ManyToOne 資料庫關聯](#day-26---spring-boot-onetomany-x-manytoone-資料庫關聯)
   - [實作TODO與USER的雙向關聯](#實作todo與user的雙向關聯)
+- [Day 27 - Spring Boot @ManyToMany多對多查詢](#day-27---spring-boot-manytomany多對多查詢)
+  - [結果](#結果)
 - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
 - [Reference](#reference)
 
@@ -2057,6 +2059,152 @@ public class Todo_User {
 INSERT INTO TODO_USER (GENDER, NAME) values (1, 'caili');
 
 INSERT INTO TODO (TASK, STATUS, UPDATE_TIME, CREATE_TIME, TODO_USER_ID ) values ('寫鐵人賽', 1, '2020-09-09 17:00', '2020-09-09 17:00', 1);
+```
+
+# Day 27 - Spring Boot @ManyToMany多對多查詢
+
+- 新增TAG
+  - 代辦事項的tag
+- 一個代辦事項可以有[生活]、[健康]等多個tag，一個tag也可以對應到很多則代辦事項
+  - 多對多對應，可以藉由一個中介表格來完成，使用 **@ManyToMany** 的標註
+- TODO TABLE
+
+| Field         | Type      | Null | Key | Default |
+| ------------- | --------- | ---- | --- | ------- |
+| id            | int       | NO   | PRI | auto    |
+| task          | varchar   | YES  |     | NULL    |
+| status        | int       | NO   |     | 1       |
+| create_time   | TIMESTAMP | NO   |     | current |
+| update_time   | TIMESTAMP | NO   |     | current |
+| **_user_id_** | int       | YES  | FK  | NULL    |
+
+- TAG資料表
+
+| Field | Type    | Null | Key | Default |
+| ----- | ------- | ---- | --- | ------- |
+| id    | int     | NO   | PRI | auto    |
+| tag   | varchar | YES  |     | NULL    |
+
+- TODOS_TAG 中介資料表
+
+| Field   | Type | Null | Key | Default |
+| ------- | ---- | ---- | --- | ------- |
+| todo_id | int  | NO   |     | NULL    |
+| tag_id  | int  | NO   |     | NULL    |
+
+- TODO的Entity 增加@ManyToMany
+
+```java
+@Entity
+@Table
+@Data
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+public class Todo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
+
+    @Column
+    String task = "";
+
+    @Column(insertable = false, columnDefinition = "int default 1")
+    Integer status = 1;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    Date createTime = new Date();
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    Date updateTime = new Date();
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="todoUser_id")
+    private Todo_User todoUser;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "todos_tag",
+            joinColumns = {@JoinColumn(name = "tag_id")},
+            inverseJoinColumns = {@JoinColumn(name = "todo_id")})
+    List<Tag> tags;
+
+    @JsonIgnore
+    public Todo_User getUser() {
+        return todoUser;
+    }
+}
+```
+
+- TAG的Entity 增加@ManyToMany
+
+```java
+@Entity
+@Table
+public class Tag {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column
+    @Getter
+    @Setter
+    private String tag;
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "tags")
+    List<Todo> todos;
+}
+```
+
+- TODO_TAG
+
+```java
+@Entity
+@Table
+@Data
+public class Todos_Tag {
+    @Id
+    @Column(name = "todo_id", nullable = false)
+    private Long todo_id;
+
+    @Column
+    private Integer tag_id;
+}
+
+```
+
+```sql
+-- 準備資料
+INSERT INTO TODO_USER (NAME, GENDER) VALUES ('caili', 2);
+INSERT INTO TAG (TAG) VALUES ('生活');
+
+INSERT INTO TODO (TASK, STATUS, UPDATE_TIME, CREATE_TIME, TODO_USER_ID ) values ('寫鐵人賽', 1, '2020-09-09 17:00', '2020-09-09 17:00', 1);
+
+INSERT INTO TODOS_TAG (TODO_ID, TAG_ID) values(1, 1) 
+```
+
+## 結果
+
+```json
+{
+  "id": 1,
+  "name": "caili",
+  "gender": 2,
+  "password": null,
+  "todos": [
+    {
+      "id": 1,
+      "task": "寫鐵人賽",
+      "status": 1,
+      "createTime": "2020-09-09T09:00:00.000+00:00",
+      "updateTime": "2020-09-09T09:00:00.000+00:00",
+      "tags": [
+        {
+          "tag": "生活"
+        }
+      ]
+    }
+  ]
+}
 ```
 
 # [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
