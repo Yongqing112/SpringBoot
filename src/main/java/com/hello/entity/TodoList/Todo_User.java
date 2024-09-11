@@ -1,21 +1,16 @@
 package com.hello.entity.TodoList;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.builder.EqualsExclude;
-import org.apache.commons.lang3.builder.HashCodeExclude;
-import org.apache.commons.lang3.builder.ToStringExclude;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table
 @Data
-public class UUser {
+public class Todo_User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +25,10 @@ public class UUser {
     @Column
     public String password;
 
-    @OneToMany(mappedBy = "uuser", cascade = CascadeType.ALL)
-    private Set<Todo> todos;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "todoUser", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("todoUser")
+    @EqualsAndHashCode.Exclude
+    private List<Todo> todos;
 
     public void setId(Integer id) {
         this.id = id;
@@ -49,7 +46,7 @@ public class UUser {
         this.password = password;
     }
 
-    public void setTodos(Set<Todo> todos) {
+    public void setTodos(List<Todo> todos) {
         this.todos = todos;
     }
 
@@ -69,7 +66,17 @@ public class UUser {
         return password;
     }
 
-    public Set<Todo> getTodos() {
+    public List<Todo> getTodos() {
         return todos;
+    }
+
+    @Override
+    public String toString() {
+        return "TodoUser{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

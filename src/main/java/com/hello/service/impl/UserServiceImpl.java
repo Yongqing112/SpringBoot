@@ -1,7 +1,7 @@
 package com.hello.service.impl;
 
 import com.hello.dao.UserDao;
-import com.hello.entity.TodoList.UUser;
+import com.hello.entity.TodoList.Todo_User;
 import com.hello.mapper.UserMapper;
 import com.hello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UUser> getTodosByUserId(Integer id) {
+    public Optional<Todo_User> getTodosByUserId(Integer id) {
         return userDao.findById(id);
     }
 }

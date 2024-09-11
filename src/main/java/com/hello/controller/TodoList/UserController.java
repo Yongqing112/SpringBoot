@@ -1,6 +1,6 @@
 package com.hello.controller.TodoList;
 
-import com.hello.entity.TodoList.UUser;
+import com.hello.entity.TodoList.Todo_User;
 import com.hello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class UserController {
 
     @GetMapping("/users/{id}/todos")
     public ResponseEntity getTodosByUserId(@PathVariable Integer id){
-        Optional<UUser> todos = userService.getTodosByUserId(id);
+        Optional<Todo_User> todos = userService.getTodosByUserId(id);
         return ResponseEntity.status(HttpStatus.OK).body(todos);
     }
 }

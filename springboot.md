@@ -83,6 +83,8 @@
 - [Day 25 - Spring Boot logging 記錄記起來](#day-25---spring-boot-logging-記錄記起來)
   - [Maven dependancy](#maven-dependancy)
   - [建立Logger](#建立logger)
+- [Day 26 - Spring Boot @OneToMany X @ManyToOne 資料庫關聯](#day-26---spring-boot-onetomany-x-manytoone-資料庫關聯)
+  - [實作TODO與USER的雙向關聯](#實作todo與user的雙向關聯)
 - [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](#站在web前端人員角度學習-spring-boot-後端開發-系列)
 - [Reference](#reference)
 
@@ -1781,18 +1783,18 @@ public class TodoController {
 
 ## 前端框架－ReactJS 快速建立一個專案
 
-* ReactJS是一個JavaScript library， 透過組件方式組合成前端UI介面，可重複使用的組件，很像樂高積木一樣，從微小組件組合成更大的組件。
-* 每個組件都有自己的業務邏輯，維護程式碼較容易。
-  * Step 1: 安裝Node.js 下載點
-  * Step 2: 建立React模版專案
-    * 在cmd輸入以下指令(我是在開Sprint Boot的Intellij輸入)
-    * npx create-react-app todolist
-    * cd todolist
-    * npm start
-      * 進入http://localhost:3000/
-* 教學並沒有提供CSS
+- ReactJS是一個JavaScript library， 透過組件方式組合成前端UI介面，可重複使用的組件，很像樂高積木一樣，從微小組件組合成更大的組件。
+- 每個組件都有自己的業務邏輯，維護程式碼較容易。
+  - Step 1: 安裝Node.js 下載點
+  - Step 2: 建立React模版專案
+    - 在cmd輸入以下指令(我是在開Sprint Boot的Intellij輸入)
+    - npx create-react-app todolist
+    - cd todolist
+    - npm start
+      - 進入http://localhost:3000/
+- 教學並沒有提供CSS
 
-* 資料夾結構
+- 資料夾結構
 
 ```
 |-- public
@@ -1808,7 +1810,7 @@ public class TodoController {
 |-- package.json # 套件配置
 ```
 
-* TitleBox.js
+- TitleBox.js
 ```js
 import React from 'react';
 
@@ -1824,7 +1826,7 @@ const TitleBox = () => {
 export default TitleBox;
 ```
 
-* TodoForm.js
+- TodoForm.js
 ```js
 import React from 'react';
 
@@ -1842,7 +1844,7 @@ const TodoForm = () => {
 export default TodoForm;
 ```
 
-* TodoItems.js
+- TodoItems.js
 ```js
 import React from 'react';
 
@@ -1863,7 +1865,7 @@ const TodoItems = ()=> {
 
 export default TodoItems;
 ```
-* ToDo.js 把組件組起來，並給根組件使用
+- ToDo.js 把組件組起來，並給根組件使用
 ```js
 import React from 'react';
 import TitleBox from '../components/TitleBox'
@@ -1887,20 +1889,20 @@ export default ToDoList;
 
 # Day 24 - Spring Boot ReactJS x ToDoList API 串起來
 
-* 新增了 src/service/todos.js 與 src/service/helper.js
-* 對原有的components修改成動態的
-* 並把之前html的style.css複製到App.css
-* 註記
-  * 修改完package.json後要記得重新啟動(npm start)
-  * 因為這部分不會自動更新，自動更新的部分應該只有網頁內容
-* [Step 17: ReactJS x ToDoList API 串起來](https://github.com/Yongqing112/SpringBoot/commit/261152c250d89b5ec95cce06c04ec2870e34dc2b)
+- 新增了 src/service/todos.js 與 src/service/helper.js
+- 對原有的components修改成動態的
+- 並把之前html的style.css複製到App.css
+- 註記
+  - 修改完package.json後要記得重新啟動(npm start)
+  - 因為這部分不會自動更新，自動更新的部分應該只有網頁內容
+- [Step 17: ReactJS x ToDoList API 串起來](https://github.com/Yongqing112/SpringBoot/commit/261152c250d89b5ec95cce06c04ec2870e34dc2b)
 
 # Day 25 - Spring Boot logging 記錄記起來
 
-* Spring Boot使用了Apache Commons logging為內部log
-* 默認配置有Java Util Logging，Log4J，Log4J2和Logback。
-* SLF4J（Simple Logging Facade For Java）
-  * 一個可作為各種日誌記錄框架，定義了統一抽象介面，Logback效率更高並能運行在諸多環境，並實作了SLF4J API。
+- Spring Boot使用了Apache Commons logging為內部log
+- 默認配置有Java Util Logging，Log4J，Log4J2和Logback。
+- SLF4J（Simple Logging Facade For Java）
+  - 一個可作為各種日誌記錄框架，定義了統一抽象介面，Logback效率更高並能運行在諸多環境，並實作了SLF4J API。
 
 ## Maven dependancy
 
@@ -1911,7 +1913,7 @@ export default ToDoList;
 </dependency>
 ```
 
-* 但是在我們一開始建立專案時，spring-boot-starter 就已經有引入spring-boot-starter-logging ，Spring Boot 預設的日誌框架為Logback。
+- 但是在我們一開始建立專案時，spring-boot-starter 就已經有引入spring-boot-starter-logging ，Spring Boot 預設的日誌框架為Logback。
 
 ## 建立Logger
 
@@ -1919,12 +1921,12 @@ export default ToDoList;
 private static final Logger logger = LoggerFactory.getLogger(Example.class);
 ```
 
-* 使用logger 提供的方法
-  * logger.info()
-  * logger.warn()
-  * logger.error()
-  * logger.debug()
-* Example:
+- 使用logger 提供的方法
+  - logger.info()
+  - logger.warn()
+  - logger.error()
+  - logger.debug()
+- Example:
 ```java
 @RestController
 @RequestMapping("/api")
@@ -1945,9 +1947,117 @@ public class TodoController {
 }
 ```
 
-* [自定義logger](https://ithelp.ithome.com.tw/articles/10248974)
+- [自定義logger](https://ithelp.ithome.com.tw/articles/10248974)
 
+# Day 26 - Spring Boot @OneToMany X @ManyToOne 資料庫關聯
 
+- TODO TABLE
+
+| Field         | Type      | Null | Key | Default |
+| ------------- | --------- | ---- | --- | ------- |
+| id            | int       | NO   | PRI | auto    |
+| task          | varchar   | YES  |     | NULL    |
+| status        | int       | NO   |     | 1       |
+| create_time   | TIMESTAMP | NO   |     | current |
+| update_time   | TIMESTAMP | NO   |     | current |
+| **_user_id_** | int       | YES  | FK  | NULL    |
+
+- USER TABLE
+
+| Field    | Type    | Null | Key | Default |
+| -------- | ------- | ---- | --- | ------- |
+| id       | int     | NO   | PRI | auto    |
+| name     | varchar | YES  |     | NULL    |
+| gender   | int     | NO   |     | 1       |
+| password | varchar | YES  |     | NULL    |
+
+## 實作TODO與USER的雙向關聯
+
+- 我有遇到無限遞迴的問題
+  - 加上@JsonIdentityInfo解決無限遞迴
+  - [網址](https://segmentfault.com/q/1010000042906248)
+- @JsonIgnore、@JsonIgnoreProperties("todoUser")隱藏JSON中的欄位
+  - [網址](https://blog.csdn.net/goodjava2007/article/details/126655804)
+
+- TODO Entity 主控方
+- @ManyToOne(cascade = CascadeType.ALL) 多對一
+  - CascadeType.REMOVE 關聯刪除操作，當刪除當前實體時，有關係映射的實體也會被刪除
+  - CascadeType.MERGE 關聯更新操作，當前實體數據改變後，有關聯的也會跟著變
+  - CascadeType.REFRESH 關聯刷新操作，資料庫更新至實體
+  - CascadeType.ALL 有所有關聯操作的權限
+  - @JoinColumn(name="user_id", referencedColumnName="id") FK 為user_id ，關聯至USER 的id
+
+```java
+@Entity
+@Table
+@Data
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+public class Todo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
+
+    @Column
+    String task = "";
+
+    @Column(insertable = false, columnDefinition = "int default 1")
+    Integer status = 1;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    Date createTime = new Date();
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    Date updateTime = new Date();
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="todoUser_id")
+    private Todo_User todoUser;
+
+    @JsonIgnore
+    public Todo_User getUser() {
+        return todoUser;
+    }
+}
+```
+
+- USER Entity 被控方
+- @OneToMany(cascade = CascadeType.ALL, mappedBy = "user") 一對多關聯至TODO entity 的user上
+- @EqualsAndHashCode.Exclude
+
+```java
+@Entity
+@Table
+@Data
+public class Todo_User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
+
+    @Column
+    public String name;
+
+    @Column(insertable = false, columnDefinition = "int default 1")
+    Integer gender = 1;
+
+    @Column
+    public String password;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "todoUser", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("todoUser")
+    @EqualsAndHashCode.Exclude
+    private List<Todo> todos;
+}
+```
+
+```sql
+-- 準備資料
+INSERT INTO TODO_USER (GENDER, NAME) values (1, 'caili');
+
+INSERT INTO TODO (TASK, STATUS, UPDATE_TIME, CREATE_TIME, TODO_USER_ID ) values ('寫鐵人賽', 1, '2020-09-09 17:00', '2020-09-09 17:00', 1);
+```
 
 # [站在Web前端人員角度，學習 Spring Boot 後端開發 系列](https://ithelp.ithome.com.tw/users/20118857/ironman/3007)
 

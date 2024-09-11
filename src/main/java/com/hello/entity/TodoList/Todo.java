@@ -1,18 +1,17 @@
 package com.hello.entity.TodoList;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
-import java.util.Objects;
 
 @Entity
 @Table
 @Data
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,16 +32,16 @@ public class Todo {
     Date updateTime = new Date();
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="uuser_id")
-    @JsonIgnore
-    private UUser uuser;
+    @JoinColumn(name="todoUser_id")
+    private Todo_User todoUser;
 
-    public UUser getUser() {
-        return uuser;
+    @JsonIgnore
+    public Todo_User getUser() {
+        return todoUser;
     }
 
-    public void setUser(UUser uUser) {
-        this.uuser = uUser;
+    public void setUser(Todo_User todoUser) {
+        this.todoUser = todoUser;
     }
 
     public Integer getId() {
@@ -83,5 +82,16 @@ public class Todo {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Todo{" +
+                "id=" + id +
+                ", task='" + task + '\'' +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
     }
 }
